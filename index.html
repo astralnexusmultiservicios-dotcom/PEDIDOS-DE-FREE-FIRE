@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astral Nexus Multiservicios - Free Fire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Black+Ops+One&display=swap');
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* --- Fondo Interactivo: Brasas de Fuego (Battle Royale) --- */
+        #particles-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at bottom, #2a0800 0%, #0a0a0a 60%);
+            z-index: -2;
+            overflow: hidden;
+        }
+        .ember {
+            position: absolute;
+            bottom: -10px;
+            background: radial-gradient(circle, #ff9d00 0%, #ff5e00 50%, transparent 100%);
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) translateX(var(--drift)) scale(0.2); opacity: 0; }
+        }
+
+        /* Título Dinámico */
+        .title-nexus { font-family: 'Black Ops One', cursive; }
+        .text-glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .text-glitch::before, .text-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.8;
+        }
+        .text-glitch::before {
+            left: 2px; text-shadow: -2px 0 #ff00c8;
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        .text-glitch::after {
+            left: -2px; text-shadow: -2px 0 #00fff9;
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 40% 0); }
+        }
+
+        /* Ocultar flechas del input number */
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; margin: 0; 
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        /* Estilo Gamer Cards */
+        .gamer-card {
+            background: linear-gradient(145deg, rgba(20,20,20,0.9) 0%, rgba(10,10,10,0.95) 100%);
+            border: 1px solid rgba(255, 100, 0, 0.2);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        .gamer-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
+            opacity: 0.5; transition: opacity 0.3s;
+        }
+        .gamer-card:hover::before { opacity: 1; }
+        
+        .glass-panel {
+            background: rgba(15, 15, 20, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(10, 10, 10, 0.8); }
+        ::-webkit-scrollbar-thumb { background: #ff5e00; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00fff9; }
+        
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+    <!-- Fondo de Partículas (Brasas) -->
+    <div id="particles-bg"></div>
+
+    <!-- Header / Branding -->
+    <header class="relative pt-10 pb-6 px-4 text-center glass-panel border-b-2 border-orange-600/50 shadow-[0_5px_30px_rgba(255,94,0,0.2)] sticky top-0 z-40">
+        <div class="flex flex-col items-center justify-center gap-1 mb-2">
+            <h1 class="title-nexus text-4xl sm:text-6xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] tracking-wide">
+                ASTRAL NEXUS
+            </h1>
+            <h2 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 tracking-[0.4em] uppercase text-glitch" data-text="MULTISERVICIOS">
+                MULTISERVICIOS
+            </h2>
+        </div>
+        
+        <div class="flex items-center justify-center gap-4 mt-4">
+            <div class="inline-flex items-center gap-2 bg-black/50 px-4 py-1.5 rounded-full border border-orange-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-orange-500"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span class="text-slate-300 text-xs sm:text-sm font-bold tracking-wider">RECARGAS OFICIALES FF</span>
+            </div>
+            <div class="inline-flex items-center gap-2 bg-black/50 px-4 py-1.5 rounded-full border border-cyan-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span id="current-date" class="text-cyan-200 text-xs sm:text-sm font-bold tracking-wider uppercase"></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative items-start">
+        
+        <!-- COLUMNA IZQUIERDA: Formulario de Recarga -->
+        <div class="lg:col-span-8 space-y-6">
+            
+            <!-- Instructivo (Colapsable/Visual) -->
+            <div class="glass-panel rounded-2xl p-4 border-l-4 border-orange-500 flex flex-col sm:flex-row gap-4 items-center">
+                <div class="bg-orange-500/20 p-3 rounded-full flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" class="text-orange-500"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5zM11 10v4h2v-4h-2zm0 5v2h2v-2h-2z"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-orange-400 font-bold text-lg mb-1">🎮 ¿Cómo crear tu pedido?</h3>
+                    <p class="text-sm text-slate-300">
+                        1. Escribe el <b>ID</b> y <b>Nombre</b> de la cuenta.<br>
+                        2. Escribe la <b>cantidad</b> en los paquetes que deseas o usa los botones (+/-).<br>
+                        3. Presiona <b>"Añadir a la Orden"</b>. Puedes repetir esto para varios IDs.<br>
+                        4. Finaliza tocando <b>"Procesar por WhatsApp"</b>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden group border border-slate-800">
+                <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-orange-500 to-cyan-500 shadow-[0_0_15px_#ff5e00]"></div>
+                
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 border-b border-slate-700/50 pb-4 text-white">
+                    <span class="bg-gradient-to-br from-orange-600 to-red-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </span>
+                    Datos del Jugador
+                </h2>
+
+                <!-- Campos de ID y Nombre -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+                    <div>
+                        <label class="block text-orange-400 text-xs font-bold mb-2 uppercase tracking-widest">ID de Free Fire</label>
+                        <input type="number" id="player-id" placeholder="Ingresa el ID numérico" class="w-full bg-black/60 border border-slate-700 rounded-xl px-4 py-3.5 text-white text-lg focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-mono tracking-widest shadow-inner placeholder-slate-600" oninput="validateId(this)">
+                    </div>
+                    <div>
+                        <label class="block text-cyan-400 text-xs font-bold mb-2 uppercase tracking-widest">Nombre (Nickname)</label>
+                        <input type="text" id="player-name" placeholder="Ej. Astral_King" class="w-full bg-black/60 border border-slate-700 rounded-xl px-4 py-3.5 text-white text-lg focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner placeholder-slate-600">
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold text-slate-200 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-400"><path d="M12 2L2 9l10 13L22 9l-10-7zm0 3.3l5.5 3.7H6.5L12 5.3zm-7.6 5.7h4.8l-3.3 9.4-1.5-9.4zm6.6 9.4l3.3-9.4h-6.6l3.3 9.4zm4.2 0l-3.3-9.4h4.8l-1.5 9.4z"/></svg>
+                    Selecciona los Paquetes
+                </h3>
+                
+                <!-- Grid de Productos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8" id="products-grid">
+                    <!-- Se inyectan por JS -->
+                </div>
+
+                <!-- Botón de Añadir a la Orden -->
+                <div class="bg-black/60 rounded-2xl p-4 border border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Subtotal de esta cuenta</p>
+                        <p class="text-3xl font-black text-white">C$ <span id="current-selection-total" class="text-orange-500">0</span></p>
+                    </div>
+                    <button onclick="addAccountToOrder()" class="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3.5 px-8 rounded-xl shadow-[0_0_20px_rgba(255,94,0,0.4)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-lg uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Añadir a la Orden
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Resumen de la Orden (Carrito) -->
+        <div class="lg:col-span-4 lg:sticky lg:top-32 space-y-4 animate-slide-up">
+            <div class="glass-panel rounded-3xl p-5 shadow-2xl border border-slate-700/50 flex flex-col h-full max-h-[85vh]">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-white border-b border-slate-700/50 pb-3 uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                    Tu Pedido
+                </h2>
+
+                <!-- Lista de Cuentas en la Orden -->
+                <div id="order-list" class="flex-grow overflow-y-auto pr-2 space-y-3 mb-4 min-h-[150px]">
+                    <!-- Inyectado por JS -->
+                </div>
+
+                <!-- Total y Checkout -->
+                <div class="mt-auto pt-4 border-t border-slate-700/50">
+                    <div class="flex justify-between items-end mb-4 bg-black/40 p-3 rounded-xl border border-slate-800">
+                        <span class="text-slate-400 font-bold uppercase tracking-widest text-sm">Total General</span>
+                        <span class="text-3xl font-black text-white flex items-baseline gap-1">
+                            <span class="text-cyan-400 text-xl">C$</span>
+                            <span id="global-total">0</span>
+                        </span>
+                    </div>
+
+                    <button onclick="enviarPedidoFinal()" id="btn-checkout" class="w-full bg-slate-800 text-slate-500 font-bold text-lg py-4 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border border-slate-700 cursor-not-allowed">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
+                        </svg>
+                        Enviar a WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Sistema de Alertas Flotantes -->
+    <div id="toast-container" class="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // --- Generador de Fondo de Brasas ---
+        function createEmbers() {
+            const container = document.getElementById('particles-bg');
+            for(let i=0; i<30; i++) {
+                let ember = document.createElement('div');
+                ember.className = 'ember';
+                let size = Math.random() * 6 + 2; // 2px a 8px
+                ember.style.width = size + 'px';
+                ember.style.height = size + 'px';
+                ember.style.left = Math.random() * 100 + 'vw';
+                ember.style.animationDuration = (Math.random() * 3 + 2) + 's'; // 2s a 5s
+                ember.style.animationDelay = (Math.random() * 5) + 's';
+                ember.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+                container.appendChild(ember);
+            }
+        }
+        createEmbers();
+
+        // --- Configuración y Datos ---
+        const whatsappNumber = "50581244993";
+
+        const products = [
+            { id: 'd100', name: '100+10 Diamantes', price: 38, type: 'diamond', color: '#00fff9' },
+            { id: 'd310', name: '310+31 Diamantes', price: 114, type: 'diamond', color: '#00fff9' },
+            { id: 'd520', name: '520+52 Diamantes', price: 172, type: 'diamond', color: '#00fff9' },
+            { id: 'd1060', name: '1060+106 Diamantes', price: 330, type: 'diamond', color: '#00fff9' },
+            { id: 'd2180', name: '2180+218 Diamantes', price: 630, type: 'diamond', color: '#00fff9' },
+            { id: 'd5600', name: '5600+560 Diamantes', price: 1600, type: 'diamond', color: '#00fff9' },
+            { id: 'msb', name: 'Membresía S. Básica', price: 25, type: 'card', color: '#ffcc00' },
+            { id: 'ms', name: 'Membresía Semanal', price: 75, type: 'card', color: '#ffcc00' },
+            { id: 'mm', name: 'Membresía Mensual', price: 365, type: 'card', color: '#ffcc00' },
+            { id: 'pb', name: 'Pase Booyahh', price: 50, type: 'pass', color: '#ff00c8' }
+        ];
+
+        let currentSelection = {}; 
+        let globalOrders = []; 
+
+        // --- Inicialización ---
+        function initApp() {
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            let dateString = new Date().toLocaleDateString('es-NI', dateOptions);
+            document.getElementById('current-date').innerText = dateString;
+
+            const grid = document.getElementById('products-grid');
+            
+            products.forEach(p => {
+                currentSelection[p.id] = 0;
+
+                // Definir ícono basado en tipo
+                let iconSVG = '';
+                if(p.type === 'diamond') {
+                    iconSVG = `<svg width="28" height="28" viewBox="0 0 24 24" fill="${p.color}"><path d="M12 2L2 9l10 13L22 9l-10-7zm0 3.3l5.5 3.7H6.5L12 5.3zm-7.6 5.7h4.8l-3.3 9.4-1.5-9.4zm6.6 9.4l3.3-9.4h-6.6l3.3 9.4zm4.2 0l-3.3-9.4h4.8l-1.5 9.4z"/></svg>`;
+                } else if(p.type === 'card') {
+                    iconSVG = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`;
+                } else {
+                    iconSVG = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path></svg>`;
+                }
+
+                grid.innerHTML += `
+                    <div class="gamer-card rounded-xl p-4 flex flex-col justify-between transition-transform hover:-translate-y-1" style="--theme-color: ${p.color}">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="bg-black/80 p-2 rounded-lg border border-slate-700">
+                                ${iconSVG}
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[${p.color}] font-black text-lg">C$ ${p.price}</p>
+                            </div>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-200 leading-tight mb-3 h-10">${p.name}</h4>
+                        
+                        <!-- Controles interactivos -->
+                        <div class="flex items-center justify-between bg-black rounded-lg border border-slate-700 p-1">
+                            <button onclick="updateQtyBtn('${p.id}', -1)" class="w-10 h-10 flex items-center justify-center bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/></svg>
+                            </button>
+                            
+                            <!-- Input Directo -->
+                            <input type="number" id="qty-${p.id}" value="0" min="0" max="99" oninput="setQtyDirect('${p.id}', this.value)" class="w-12 h-10 bg-transparent text-center text-white font-bold text-xl focus:outline-none focus:text-[${p.color}] transition-colors border-none">
+                            
+                            <button onclick="updateQtyBtn('${p.id}', 1)" class="w-10 h-10 flex items-center justify-center bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            renderCart();
+        }
+
+        // --- Lógica de Cantidades ---
+        function updateQtyBtn(id, delta) {
+            let current = currentSelection[id] || 0;
+            setQtyDirect(id, current + delta);
+        }
+
+        function setQtyDirect(id, value) {
+            let num = parseInt(value);
+            if (isNaN(num) || num < 0) num = 0;
+            if (num > 99) num = 99; // Límite razonable
+            
+            currentSelection[id] = num;
+            
+            const inputEl = document.getElementById(`qty-${id}`);
+            if(inputEl.value != num) inputEl.value = num; // Evitar saltos de cursor si ya es igual
+            
+            // Efecto visual
+            inputEl.classList.add('scale-110');
+            setTimeout(() => inputEl.classList.remove('scale-110'), 150);
+
+            calculateSubtotal();
+        }
+
+        function calculateSubtotal() {
+            let subtotal = 0;
+            for (let id in currentSelection) {
+                if (currentSelection[id] > 0) {
+                    const product = products.find(p => p.id === id);
+                    subtotal += product.price * currentSelection[id];
+                }
+            }
+            document.getElementById('current-selection-total').innerText = subtotal.toLocaleString('en-US');
+        }
+
+        function validateId(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+        // --- Gestión de Órdenes ---
+        function addAccountToOrder() {
+            const idInput = document.getElementById('player-id');
+            const nameInput = document.getElementById('player-name');
+            const playerId = idInput.value.trim();
+            const playerName = nameInput.value.trim();
+
+            if (!playerId || playerId.length < 5) {
+                showToast("Ingresa un ID numérico válido.", true);
+                idInput.focus();
+                return;
+            }
+            if (!playerName) {
+                showToast("Ingresa el Nombre del jugador.", true);
+                nameInput.focus();
+                return;
+            }
+
+            let subtotal = 0;
+            let items = [];
+
+            for (let id in currentSelection) {
+                if (currentSelection[id] > 0) {
+                    const product = products.find(p => p.id === id);
+                    const lineTotal = product.price * currentSelection[id];
+                    subtotal += lineTotal;
+                    items.push({
+                        product: product,
+                        qty: currentSelection[id],
+                        lineTotal: lineTotal
+                    });
+                }
+            }
+
+            if (items.length === 0) {
+                showToast("Agrega cantidades en los paquetes deseados.", true);
+                return;
+            }
+
+            globalOrders.push({
+                playerId: playerId,
+                playerName: playerName,
+                items: items,
+                total: subtotal
+            });
+
+            // Limpiar
+            idInput.value = '';
+            nameInput.value = '';
+            for (let id in currentSelection) {
+                setQtyDirect(id, 0);
+            }
+
+            showToast("✅ Cuenta añadida. Puedes agregar otra si lo deseas.", false);
+            renderCart();
+        }
+
+        // Función nueva: Editar una orden existente
+        function editOrder(index) {
+            const order = globalOrders[index];
+            
+            // Cargar datos al formulario
+            document.getElementById('player-id').value = order.playerId;
+            document.getElementById('player-name').value = order.playerName;
+
+            // Resetear la selección actual a 0
+            for (let id in currentSelection) {
+                setQtyDirect(id, 0);
+            }
+
+            // Aplicar las cantidades de la orden a editar
+            order.items.forEach(item => {
+                setQtyDirect(item.product.id, item.qty);
+            });
+
+            // Eliminar la orden del carrito para evitar duplicados al guardar
+            globalOrders.splice(index, 1);
+            renderCart();
+
+            // Scroll hacia arriba
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast("✏️ Orden cargada. Modifica y vuelve a presionar Añadir.", false);
+        }
+
+        function removeOrder(index) {
+            globalOrders.splice(index, 1);
+            renderCart();
+        }
+
+        function renderCart() {
+            const listEl = document.getElementById('order-list');
+            let globalTotal = 0;
+
+            if (globalOrders.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center text-slate-500 text-sm mt-10 flex flex-col items-center">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-12 h-12 mb-3 opacity-30"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        El carrito está vacío.
+                    </div>`;
+                updateCheckoutButton(0);
+                return;
+            }
+
+            listEl.innerHTML = '';
+            
+            globalOrders.forEach((order, index) => {
+                globalTotal += order.total;
+                
+                let itemsHTML = order.items.map(i => {
+                    let icon = i.product.type === 'diamond' ? '💎' : (i.product.type === 'pass' ? '🎟️' : '💳');
+                    return `<div class="flex justify-between text-xs text-slate-300 mt-1.5 pl-2 border-l-2 border-slate-700">
+                                <span><b class="text-white">${i.qty}x</b> ${icon} ${i.product.name}</span>
+                                <span class="text-slate-400">C$${i.lineTotal}</span>
+                            </div>`;
+                }).join('');
+
+                listEl.innerHTML += `
+                    <div class="bg-black/60 border border-slate-700 rounded-xl p-3 relative group animate-slide-up hover:border-orange-500/50 transition-colors">
+                        
+                        <!-- Botones de Acción: Editar y Eliminar -->
+                        <div class="absolute top-2 right-2 flex gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <button onclick="editOrder(${index})" class="bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white p-1.5 rounded transition-colors" title="Editar este pedido">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                            <button onclick="removeOrder(${index})" class="bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white p-1.5 rounded transition-colors" title="Eliminar">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+
+                        <div class="mb-2 pr-16">
+                            <p class="text-orange-400 font-bold text-sm tracking-wide">${order.playerName}</p>
+                            <p class="text-slate-400 font-mono text-xs">ID: ${order.playerId}</p>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg mb-2">
+                            ${itemsHTML}
+                        </div>
+                        <div class="text-right text-sm font-bold text-white mt-2">
+                            Subtotal: <span class="text-orange-500">C$ ${order.total}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('global-total').innerText = globalTotal.toLocaleString('en-US');
+            updateCheckoutButton(globalTotal);
+            listEl.scrollTop = listEl.scrollHeight;
+        }
+
+        function updateCheckoutButton(total) {
+            const btn = document.getElementById('btn-checkout');
+            if (total > 0) {
+                btn.classList.remove('bg-slate-800', 'text-slate-500', 'cursor-not-allowed', 'border-slate-700');
+                btn.classList.add('bg-[#25D366]', 'text-white', 'hover:bg-green-500', 'border-green-400', 'shadow-[0_0_20px_rgba(37,211,102,0.4)]');
+            } else {
+                btn.classList.add('bg-slate-800', 'text-slate-500', 'cursor-not-allowed', 'border-slate-700');
+                btn.classList.remove('bg-[#25D366]', 'text-white', 'hover:bg-green-500', 'border-green-400', 'shadow-[0_0_20px_rgba(37,211,102,0.4)]');
+            }
+        }
+
+        function enviarPedidoFinal() {
+            if (globalOrders.length === 0) return;
+
+            let globalTotal = 0;
+            const fecha = new Date().toLocaleString('es-NI', { dateStyle: 'short', timeStyle: 'short' });
+            
+            let msg = `*ASTRAL NEXUS MULTISERVICIOS* 🚀\n`;
+            msg += `_Recargas Free Fire | Fecha: ${fecha}_\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            globalOrders.forEach((order, i) => {
+                globalTotal += order.total;
+                msg += `👤 *Cuenta ${i + 1}*\n`;
+                msg += `▪ *ID:* \`${order.playerId}\`\n`;
+                msg += `▪ *Nombre:* ${order.playerName}\n`;
+                
+                order.items.forEach(item => {
+                    let icon = item.product.type === 'diamond' ? '💎' : (item.product.type === 'pass' ? '🎟️' : '💳');
+                    msg += `  - ${item.qty}x ${icon} ${item.product.name}\n`;
+                });
+                msg += `\n`;
+            });
+
+            msg += `━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `💰 *TOTAL A DEPOSITAR: C$ ${globalTotal}*\n\n`;
+            msg += `✅ _Por favor, envía la captura/comprobante del depósito para procesar las recargas inmediatamente._`;
+
+            const urlWhatsApp = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+            
+            showToast("Abriendo WhatsApp...", false);
+            setTimeout(() => { window.open(urlWhatsApp, '_blank'); }, 600);
+        }
+
+        // --- Alertas Toast ---
+        function showToast(message, isError = true) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgColor = isError ? 'bg-red-600 border-red-400' : 'bg-green-600 border-green-400';
+            const icon = isError 
+                ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+                : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+
+            toast.className = `flex items-center gap-3 ${bgColor} border backdrop-blur-md text-white px-6 py-3 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] font-bold animate-slide-up z-50`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
