@@ -8,38 +8,43 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Black+Ops+One&display=swap');
         
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-violet: #a855f7;
+            --dark-bg: #050508;
+        }
+
         body {
             font-family: 'Rajdhani', sans-serif;
-            background-color: #0a0a0a;
+            background-color: var(--dark-bg);
             color: white;
             overflow-x: hidden;
             margin: 0;
         }
 
-        /* --- Fondo Interactivo: Brasas de Fuego (Battle Royale) --- */
+        /* --- Fondo Interactivo Azul/Violeta --- */
         #particles-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at bottom, #2a0800 0%, #0a0a0a 60%);
+            background: radial-gradient(circle at bottom, #1e1b4b 0%, #050508 60%);
             z-index: -2;
             overflow: hidden;
         }
         .ember {
             position: absolute;
             bottom: -10px;
-            background: radial-gradient(circle, #ff9d00 0%, #ff5e00 50%, transparent 100%);
+            background: radial-gradient(circle, var(--primary-violet) 0%, var(--primary-blue) 50%, transparent 100%);
             border-radius: 50%;
-            filter: blur(1px);
+            filter: blur(2px);
             opacity: 0;
             animation: floatUp linear infinite;
         }
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 0; }
-            20% { opacity: 0.8; }
+            20% { opacity: 0.6; }
             100% { transform: translateY(-100vh) translateX(var(--drift)) scale(0.2); opacity: 0; }
         }
 
-        /* Título Dinámico */
         .title-nexus { font-family: 'Black Ops One', cursive; }
         .text-glitch {
             position: relative;
@@ -62,528 +67,597 @@
         @keyframes glitch-anim {
             0% { clip-path: inset(20% 0 80% 0); }
             20% { clip-path: inset(60% 0 10% 0); }
-            40% { clip-path: inset(40% 0 50% 0); }
-            60% { clip-path: inset(80% 0 5% 0); }
-            80% { clip-path: inset(10% 0 70% 0); }
             100% { clip-path: inset(30% 0 40% 0); }
         }
 
-        /* Ocultar flechas del input number */
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { 
             -webkit-appearance: none; margin: 0; 
         }
-        input[type="number"] { -moz-appearance: textfield; }
 
-        /* Estilo Gamer Cards */
+        /* --- DISEÑO DE TARJETA DE PRODUCTO CON BORDES DINÁMICOS --- */
         .gamer-card {
-            background: linear-gradient(145deg, rgba(20,20,20,0.9) 0%, rgba(10,10,10,0.95) 100%);
-            border: 1px solid rgba(255, 100, 0, 0.2);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            background: linear-gradient(145deg, rgba(15,15,25,0.9) 0%, rgba(5,5,10,0.95) 100%);
             position: relative;
-        }
-        .gamer-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
-            opacity: 0.5; transition: opacity 0.3s;
-        }
-        .gamer-card:hover::before { opacity: 1; }
-        
-        .glass-panel {
-            background: rgba(15, 15, 20, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            z-index: 1;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        
+        .gamer-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(60deg, transparent, var(--theme-color), transparent, var(--theme-color));
+            background-size: 300% 300%;
+            z-index: -1;
+            border-radius: 26px;
+            animation: animateBorder 4s ease infinite;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+        }
 
-        /* Scrollbar */
+        .gamer-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px var(--theme-color);
+        }
+        .gamer-card:hover::before {
+            opacity: 1;
+            animation-duration: 2s;
+        }
+
+        @keyframes animateBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Efecto del Precio */
+        .price-glitz {
+            background: linear-gradient(90deg, #ffffff, var(--theme-color), #ffffff);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: shinePrice 3s linear infinite;
+        }
+        @keyframes shinePrice {
+            to { background-position: 200% center; }
+        }
+
+        .product-image-container {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%);
+            border-radius: 16px;
+            margin-bottom: 15px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+        }
+
+        .product-image-container img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+            transition: transform 0.4s ease;
+        }
+        
+        .glass-panel {
+            background: rgba(10, 10, 20, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- BOTONES Y PESTAÑAS ANIMADOS --- */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-20deg);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(59,130,246,0.4), 0 0 20px rgba(168,85,247,0.3); transform: scale(1); }
+            50% { box-shadow: 0 0 30px rgba(59,130,246,0.8), 0 0 40px rgba(168,85,247,0.6); transform: scale(1.02); }
+            100% { box-shadow: 0 0 15px rgba(59,130,246,0.4), 0 0 20px rgba(168,85,247,0.3); transform: scale(1); }
+        }
+        .btn-checkout-active {
+            animation: pulseGlow 2.5s infinite;
+            border: 1px solid rgba(168,85,247,0.5);
+        }
+
+        .category-tab {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .category-tab::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.4s;
+            z-index: -1;
+        }
+        .category-tab:hover::before { left: 100%; }
+        .category-tab.active {
+            background: linear-gradient(135deg, #3b82f6, #a855f7);
+            color: white;
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.5);
+            transform: translateY(-2px);
+        }
+
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(10, 10, 10, 0.8); }
-        ::-webkit-scrollbar-thumb { background: #ff5e00; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #00fff9; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
         
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+
+        .bar { width: 3px; height: 15px; background: #a855f7; margin: 0 1px; animation: bounce 0.8s infinite alternate; }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { from { height: 4px; } to { height: 18px; } }
     </style>
 </head>
 <body class="min-h-screen pb-10">
 
-    <!-- Fondo de Partículas (Brasas) -->
     <div id="particles-bg"></div>
 
-    <!-- Header / Branding -->
-    <header class="relative pt-10 pb-6 px-4 text-center glass-panel border-b-2 border-orange-600/50 shadow-[0_5px_30px_rgba(255,94,0,0.2)] sticky top-0 z-40">
-        <div class="flex flex-col items-center justify-center gap-1 mb-2">
-            <h1 class="title-nexus text-4xl sm:text-6xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] tracking-wide">
-                ASTRAL NEXUS
-            </h1>
-            <h2 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 tracking-[0.4em] uppercase text-glitch" data-text="MULTISERVICIOS">
-                MULTISERVICIOS
-            </h2>
+    <!-- Modal para Visualizador de Imágenes -->
+    <div id="image-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-md transition-opacity opacity-0" onclick="closeModal(event)">
+        <button class="absolute top-6 right-6 sm:top-10 sm:right-10 text-white hover:text-red-500 bg-white/10 hover:bg-white/20 rounded-full p-2 transition-all shadow-2xl" onclick="closeModal(event)">
+            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <img id="modal-img" src="" class="max-w-[95vw] max-h-[85vh] object-contain drop-shadow-[0_0_40px_rgba(59,130,246,0.6)] transform scale-90 transition-transform duration-300" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- Header -->
+    <header class="relative pt-8 pb-6 px-4 text-center glass-panel border-b border-blue-600/30 shadow-2xl sticky top-0 z-40">
+        <!-- Control de Música -->
+        <div class="absolute top-4 right-4 flex items-center gap-3">
+            <div id="music-bars" class="hidden flex items-end h-5">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+            <button onclick="toggleMusic()" class="bg-black/60 border border-blue-500/50 p-2 rounded-full hover:bg-blue-600 transition-all text-white group">
+                <svg id="music-icon-play" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <svg id="music-icon-pause" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <div class="flex flex-col items-center justify-center gap-1">
+            <h1 class="title-nexus text-4xl sm:text-6xl text-white drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]">ASTRAL NEXUS</h1>
+            <h2 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400 tracking-[0.3em] uppercase text-glitch" data-text="MULTISERVICIOS">MULTISERVICIOS</h2>
         </div>
         
         <div class="flex items-center justify-center gap-4 mt-4">
-            <div class="inline-flex items-center gap-2 bg-black/50 px-4 py-1.5 rounded-full border border-orange-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-orange-500"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                <span class="text-slate-300 text-xs sm:text-sm font-bold tracking-wider">RECARGAS OFICIALES FF</span>
-            </div>
-            <div class="inline-flex items-center gap-2 bg-black/50 px-4 py-1.5 rounded-full border border-cyan-500/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span id="current-date" class="text-cyan-200 text-xs sm:text-sm font-bold tracking-wider uppercase"></span>
-            </div>
+            <span class="bg-blue-900/40 px-4 py-1 rounded-full border border-blue-500/30 text-xs sm:text-sm font-bold text-blue-200 uppercase tracking-widest">SISTEMA DE PEDIDOS</span>
+            <span id="current-date" class="text-violet-400 text-xs sm:text-sm font-bold uppercase tracking-widest"></span>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative items-start">
-        
-        <!-- COLUMNA IZQUIERDA: Formulario de Recarga -->
-        <div class="lg:col-span-8 space-y-6">
-            
-            <!-- Instructivo (Colapsable/Visual) -->
-            <div class="glass-panel rounded-2xl p-4 border-l-4 border-orange-500 flex flex-col sm:flex-row gap-4 items-center">
-                <div class="bg-orange-500/20 p-3 rounded-full flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" class="text-orange-500"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5zM11 10v4h2v-4h-2zm0 5v2h2v-2h-2z"/></svg>
-                </div>
-                <div>
-                    <h3 class="text-orange-400 font-bold text-lg mb-1">🎮 ¿Cómo crear tu pedido?</h3>
-                    <p class="text-sm text-slate-300">
-                        1. Escribe el <b>ID</b> y <b>Nombre</b> de la cuenta.<br>
-                        2. Escribe la <b>cantidad</b> en los paquetes que deseas o usa los botones (+/-).<br>
-                        3. Presiona <b>"Añadir a la Orden"</b>. Puedes repetir esto para varios IDs.<br>
-                        4. Finaliza tocando <b>"Procesar por WhatsApp"</b>.
-                    </p>
-                </div>
-            </div>
-
-            <div class="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden group border border-slate-800">
-                <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-orange-500 to-cyan-500 shadow-[0_0_15px_#ff5e00]"></div>
-                
-                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 border-b border-slate-700/50 pb-4 text-white">
-                    <span class="bg-gradient-to-br from-orange-600 to-red-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    </span>
-                    Datos del Jugador
-                </h2>
-
-                <!-- Campos de ID y Nombre -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-                    <div>
-                        <label class="block text-orange-400 text-xs font-bold mb-2 uppercase tracking-widest">ID de Free Fire</label>
-                        <input type="number" id="player-id" placeholder="Ingresa el ID numérico" class="w-full bg-black/60 border border-slate-700 rounded-xl px-4 py-3.5 text-white text-lg focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-mono tracking-widest shadow-inner placeholder-slate-600" oninput="validateId(this)">
-                    </div>
-                    <div>
-                        <label class="block text-cyan-400 text-xs font-bold mb-2 uppercase tracking-widest">Nombre (Nickname)</label>
-                        <input type="text" id="player-name" placeholder="Ej. Astral_King" class="w-full bg-black/60 border border-slate-700 rounded-xl px-4 py-3.5 text-white text-lg focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner placeholder-slate-600">
-                    </div>
-                </div>
-
-                <h3 class="text-lg font-bold text-slate-200 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-400"><path d="M12 2L2 9l10 13L22 9l-10-7zm0 3.3l5.5 3.7H6.5L12 5.3zm-7.6 5.7h4.8l-3.3 9.4-1.5-9.4zm6.6 9.4l3.3-9.4h-6.6l3.3 9.4zm4.2 0l-3.3-9.4h4.8l-1.5 9.4z"/></svg>
-                    Selecciona los Paquetes
+    <!-- INSTRUCCIONES Y PORTAL DE PINES -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Guía de Pedidos -->
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-blue-500/30 relative overflow-hidden flex flex-col justify-center">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/10 blur-3xl rounded-full"></div>
+                <h3 class="text-2xl font-black text-blue-400 mb-5 uppercase tracking-widest flex items-center gap-3">
+                    <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    ¿Cómo pedir recargas?
                 </h3>
-                
-                <!-- Grid de Productos -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8" id="products-grid">
-                    <!-- Se inyectan por JS -->
-                </div>
+                <ul class="space-y-4 text-base text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-blue-600 shadow-[0_0_10px_#3b82f6] text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">1</span> 
+                        <div>Ingresa el <b>ID numérico</b> y el <b>Nick (Nombre)</b> exacto de la cuenta a recargar.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-blue-600 shadow-[0_0_10px_#3b82f6] text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">2</span> 
+                        <div>Agrega la cantidad de los paquetes que necesitas y dale al botón <b>"Confirmar Cuenta"</b>. <span class="text-xs opacity-70">(Puedes añadir múltiples cuentas al carrito)</span></div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-blue-600 shadow-[0_0_10px_#3b82f6] text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">3</span> 
+                        <div>Haz clic en procesar y envía el mensaje generado por <b>WhatsApp</b>.</div>
+                    </li>
+                </ul>
+            </div>
 
-                <!-- Botón de Añadir a la Orden -->
-                <div class="bg-black/60 rounded-2xl p-4 border border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Subtotal de esta cuenta</p>
-                        <p class="text-3xl font-black text-white">C$ <span id="current-selection-total" class="text-orange-500">0</span></p>
-                    </div>
-                    <button onclick="addAccountToOrder()" class="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3.5 px-8 rounded-xl shadow-[0_0_20px_rgba(255,94,0,0.4)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-lg uppercase tracking-wider">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Añadir a la Orden
-                    </button>
-                </div>
+            <!-- Portal de Canje Pines -->
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-violet-500/40 bg-gradient-to-br from-violet-900/30 to-black relative overflow-hidden flex flex-col justify-center items-center text-center group cursor-pointer" onclick="window.open('https://astralnexusmultiservicios-dotcom.github.io/CANJE-DE-TARJETA-REGALOS-DE-PINES-FREE-FIRE/', '_blank')">
+                <div class="absolute inset-0 bg-violet-600/5 group-hover:bg-violet-600/20 transition-colors duration-500"></div>
+                <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-violet-500/20 blur-3xl rounded-full group-hover:bg-violet-500/40 transition-all"></div>
+                
+                <svg width="60" height="60" fill="none" stroke="#a855f7" stroke-width="1.5" class="mb-4 group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+                    <rect x="2" y="5" width="20" height="14" rx="2" ry="2"/>
+                    <line x1="2" y1="10" x2="22" y2="10"/>
+                    <path d="M12 15h.01"/>
+                </svg>
+                
+                <h3 class="text-3xl font-black text-white uppercase tracking-widest mb-2 group-hover:text-violet-300 transition-colors drop-shadow-md text-glitch" data-text="CANJEAR PINES FF">CANJEAR PINES FF</h3>
+                <p class="text-violet-200 text-sm mb-6 max-w-sm">¿Compraste una tarjeta de regalo? Entra a nuestro portal de canje automático para redimir tu código PIN.</p>
+                <button class="bg-violet-600 hover:bg-violet-500 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all transform group-hover:scale-105">
+                    Ir al Portal de Canje ➔
+                </button>
             </div>
         </div>
+        
+        <!-- Alerta de Seguridad Global -->
+        <div class="mt-6 bg-red-900/20 border border-red-500/50 rounded-2xl p-4 flex items-center gap-4 text-red-200">
+            <svg width="30" height="30" fill="none" stroke="#ef4444" stroke-width="2" class="shrink-0 animate-pulse"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <p class="text-sm font-medium leading-relaxed">
+                <b class="uppercase tracking-widest text-red-400 block mb-1">Políticas de Validación de Pedido:</b>
+                Queda estrictamente prohibido alterar o modificar el mensaje de cobro autogenerado hacia WhatsApp. Nuestro equipo verifica minuciosamente que el total y los montos coincidan exactamente con nuestra base de datos antes de proceder a la entrega.
+            </p>
+        </div>
+    </div>
 
-        <!-- COLUMNA DERECHA: Resumen de la Orden (Carrito) -->
-        <div class="lg:col-span-4 lg:sticky lg:top-32 space-y-4 animate-slide-up">
-            <div class="glass-panel rounded-3xl p-5 shadow-2xl border border-slate-700/50 flex flex-col h-full max-h-[85vh]">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-white border-b border-slate-700/50 pb-3 uppercase tracking-widest">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-cyan-400"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-                    Tu Pedido
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Formulario Izquierda -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 relative">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-violet-500 to-blue-500 opacity-70"></div>
+                
+                <h2 class="text-2xl font-bold mb-8 flex items-center gap-3 text-white uppercase tracking-tighter">
+                    <span class="bg-blue-600 p-2 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.5)]"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-1.29 1.94-3.5 3.22-6 3.22z"/></svg></span>
+                    Identificación del Jugador
                 </h2>
 
-                <!-- Lista de Cuentas en la Orden -->
-                <div id="order-list" class="flex-grow overflow-y-auto pr-2 space-y-3 mb-4 min-h-[150px]">
-                    <!-- Inyectado por JS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+                    <div class="space-y-2">
+                        <label class="text-blue-400 text-xs font-bold uppercase tracking-widest ml-1">ID numérico FF</label>
+                        <input type="number" id="player-id" placeholder="ID de la cuenta" class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white text-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-mono tracking-widest transition-colors" oninput="validateId(this)">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-violet-400 text-xs font-bold uppercase tracking-widest ml-1">Nombre (Nickname)</label>
+                        <input type="text" id="player-name" placeholder="Ej: Astral_Master" class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white text-xl focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors">
+                    </div>
                 </div>
 
-                <!-- Total y Checkout -->
-                <div class="mt-auto pt-4 border-t border-slate-700/50">
-                    <div class="flex justify-between items-end mb-4 bg-black/40 p-3 rounded-xl border border-slate-800">
-                        <span class="text-slate-400 font-bold uppercase tracking-widest text-sm">Total General</span>
-                        <span class="text-3xl font-black text-white flex items-baseline gap-1">
-                            <span class="text-cyan-400 text-xl">C$</span>
-                            <span id="global-total">0</span>
-                        </span>
-                    </div>
+                <!-- Pestañas de Categoría -->
+                <div class="flex flex-wrap gap-2 mb-8 bg-black/30 p-1.5 rounded-2xl border border-slate-800">
+                    <button onclick="switchTab('diamond')" id="tab-diamond" class="category-tab active flex-1 py-3 px-4 rounded-xl font-bold text-sm uppercase tracking-wider">Diamantes</button>
+                    <button onclick="switchTab('card')" id="tab-card" class="category-tab flex-1 py-3 px-4 rounded-xl font-bold text-sm uppercase tracking-wider">Membresías</button>
+                    <button onclick="switchTab('pass')" id="tab-pass" class="category-tab flex-1 py-3 px-4 rounded-xl font-bold text-sm uppercase tracking-wider">Pases</button>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10" id="products-grid">
+                    <!-- Se genera por JS -->
+                </div>
 
-                    <button onclick="enviarPedidoFinal()" id="btn-checkout" class="w-full bg-slate-800 text-slate-500 font-bold text-lg py-4 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border border-slate-700 cursor-not-allowed">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
-                        </svg>
-                        Enviar a WhatsApp
+                <div class="bg-gradient-to-br from-slate-900 to-black rounded-3xl p-6 border border-blue-900/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-inner relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl"></div>
+                    <div class="text-center sm:text-left relative z-10">
+                        <p class="text-blue-300/60 text-xs font-bold uppercase tracking-widest mb-1">Subtotal de la Selección</p>
+                        <p class="text-4xl font-black text-white">C$ <span id="current-selection-total" class="text-blue-500">0</span></p>
+                    </div>
+                    <button onclick="addAccountToOrder()" class="btn-shine w-full sm:w-auto bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-black py-5 px-10 rounded-2xl shadow-[0_0_25px_rgba(168,85,247,0.4)] transition-all transform flex items-center justify-center gap-3 text-lg uppercase relative z-10">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Confirmar Cuenta
                     </button>
                 </div>
             </div>
         </div>
 
+        <!-- Carrito -->
+        <div class="lg:col-span-4 lg:sticky lg:top-36 space-y-4">
+            <div class="glass-panel rounded-3xl p-6 shadow-2xl border border-blue-800/20 flex flex-col min-h-[400px]">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-3 text-white uppercase tracking-widest border-b border-slate-800 pb-4">
+                    <svg width="24" height="24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                    Carrito de Pedido
+                </h2>
+
+                <div id="order-list" class="flex-grow overflow-y-auto space-y-4 mb-6 max-h-[50vh] pr-2"></div>
+
+                <div class="pt-6 border-t border-slate-800">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <span class="text-slate-400 font-bold uppercase text-xs tracking-widest">Total Global</span>
+                        <span class="text-3xl font-black text-white">C$ <span id="global-total" class="text-blue-400">0</span></span>
+                    </div>
+
+                    <p class="text-[10px] text-center text-slate-500 uppercase tracking-widest mb-3">Tu solicitud será verificada vía WhatsApp</p>
+
+                    <button onclick="enviarPedidoFinal()" id="btn-checkout" class="w-full bg-slate-800 text-slate-500 font-black text-lg py-5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-slate-700 cursor-not-allowed">
+                        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+                        PROCESAR PEDIDO
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Sistema de Alertas Flotantes -->
-    <div id="toast-container" class="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <!-- Audios -->
+    <audio id="bg-music" loop preload="auto"></audio>
+    <audio id="fx-add" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+
+    <div id="toast-container" class="fixed top-24 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-xs"></div>
 
     <script>
-        // --- Generador de Fondo de Brasas ---
-        function createEmbers() {
-            const container = document.getElementById('particles-bg');
-            for(let i=0; i<30; i++) {
-                let ember = document.createElement('div');
-                ember.className = 'ember';
-                let size = Math.random() * 6 + 2; // 2px a 8px
-                ember.style.width = size + 'px';
-                ember.style.height = size + 'px';
-                ember.style.left = Math.random() * 100 + 'vw';
-                ember.style.animationDuration = (Math.random() * 3 + 2) + 's'; // 2s a 5s
-                ember.style.animationDelay = (Math.random() * 5) + 's';
-                ember.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
-                container.appendChild(ember);
+        // --- CONFIGURACIÓN DE AUDIO ---
+        const urlMusica = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"; 
+        const music = document.getElementById('bg-music');
+        music.src = urlMusica;
+        let isPlaying = false;
+
+        function toggleMusic() {
+            const playIcon = document.getElementById('music-icon-play');
+            const pauseIcon = document.getElementById('music-icon-pause');
+            const bars = document.getElementById('music-bars');
+            if (!isPlaying) {
+                music.play().catch(e => console.log("Init required"));
+                playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); bars.classList.remove('hidden');
+                isPlaying = true;
+            } else {
+                music.pause();
+                playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); bars.classList.add('hidden');
+                isPlaying = false;
             }
         }
-        createEmbers();
 
-        // --- Configuración y Datos ---
-        const whatsappNumber = "50581244993";
+        // --- SISTEMA DE MODAL PARA IMÁGENES ---
+        function openModal(src) {
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img');
+            img.src = src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Timeout para permitir que la clase 'flex' se aplique antes de la transición de opacidad
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                img.classList.remove('scale-90');
+                img.classList.add('scale-100');
+            }, 10);
+        }
 
+        function closeModal(e) {
+            // Evitar que cierre si hacen clic en la imagen en sí
+            if (e && e.target.id === 'modal-img') return;
+            
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img');
+            
+            modal.classList.add('opacity-0');
+            img.classList.remove('scale-100');
+            img.classList.add('scale-90');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                img.src = '';
+            }, 300);
+        }
+
+        // --- CATÁLOGO DE PRODUCTOS ---
         const products = [
-            { id: 'd100', name: '100+10 Diamantes', price: 38, type: 'diamond', color: '#00fff9' },
-            { id: 'd310', name: '310+31 Diamantes', price: 115, type: 'diamond', color: '#00fff9' },
-            { id: 'd520', name: '520+52 Diamantes', price: 175, type: 'diamond', color: '#00fff9' },
-            { id: 'd1060', name: '1060+106 Diamantes', price: 335, type: 'diamond', color: '#00fff9' },
-            { id: 'd2180', name: '2180+218 Diamantes', price: 635, type: 'diamond', color: '#00fff9' },
-            { id: 'd5600', name: '5600+560 Diamantes', price: 1650, type: 'diamond', color: '#00fff9' },
-            { id: 'msb', name: 'Membresía S. Básica', price: 25, type: 'card', color: '#ffcc00' },
-            { id: 'ms', name: 'Membresía Semanal', price: 75, type: 'card', color: '#ffcc00' },
-            { id: 'mm', name: 'Membresía Mensual', price: 365, type: 'card', color: '#ffcc00' },
-            { id: 'pb', name: 'Pase Booyahh', price: 50, type: 'pass', color: '#ff00c8' }
+            // Diamantes
+            { id: 'd100', category: 'diamond', name: '100+10 Diamantes', price: 38, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/tdox1df38bo3tgsocxu6q/image_1772916122952.png?rlkey=b9mwpym9h1faemlm8bxewklfp&st=st1txhf0&raw=1' },
+            { id: 'd310', category: 'diamond', name: '310+31 Diamantes', price: 115, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/ecgi09ijx7zs3elxwi7y4/image_1772916122952-1.png?rlkey=v297zoyo1vr7jf04sj14hhwlh&st=xuyea2vd&raw=1' },
+            { id: 'd520', category: 'diamond', name: '520+52 Diamantes', price: 175, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/nn9apv1k8yor5qz5po8s5/image_1772916122952-2.png?rlkey=7fjv3bhqibn2btdeqdw4113i4&st=mtoze6sz&raw=1' },
+            { id: 'd1060', category: 'diamond', name: '1,060+106 Diamantes', price: 335, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/mkls8ndz8ffgkzjvx64j8/image_1772916122952-4.png?rlkey=zozedza69urinjjkuqk16zr8f&st=lu5mi1v7&raw=1' },
+            { id: 'd2180', category: 'diamond', name: '2,180+218 Diamantes', price: 635, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/fvrtjxgwuvn3bv4xveclh/image_1772916122952-5.png?rlkey=455pcid1x6urd4czv5c9d75jf&st=gu07m28u&raw=1' },
+            { id: 'd5600', category: 'diamond', name: '5,600+516 Diamantes', price: 1650, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/k44770iehaqw23f59z4a0/image_1772916122952-6.png?rlkey=gba9m1ttqvkcviuc63dked3ot&st=h4p9kui3&raw=1' },
+            
+            // Membresías
+            { id: 'msb', category: 'card', name: 'Semanal Básica', price: 25, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/ahq38o0mw6s2qqcvb6kti/image_1772916122952-8.png?rlkey=6267ei3elqqf47gt8vdjc6akb&st=tahnif9f&raw=1' },
+            { id: 'ms', category: 'card', name: 'Membresía Semanal', price: 75, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/x4ri4lon1sruytfu68ppt/image_1772916122952-9.png?rlkey=4ot5vjkekuy6v0tjs8bybl899&st=4qfj9vye&raw=1' },
+            { id: 'mm', category: 'card', name: 'Membresía Mensual', price: 365, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/ryb89djsol1a2vly7lxur/image_1772916122952-10.png?rlkey=6rbdtojsazf6d17qelpsrb234&st=pjigbc4v&raw=1' },
+            
+            // Pase
+            { id: 'pb', category: 'pass', name: 'Pase Booyahh', price: 60, color: '#f43f5e', image: 'https://www.dropbox.com/scl/fi/jkburejmve5ftohs9vupu/image_1772916122952-7.png?rlkey=bc7uvkx839min1rbik2e3xm06&st=wlaq1zof&raw=1' }
         ];
 
         let currentSelection = {}; 
         let globalOrders = []; 
+        let activeTab = 'diamond';
+        const whatsappNumber = "50581244993";
 
-        // --- Inicialización ---
         function initApp() {
-            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            let dateString = new Date().toLocaleDateString('es-NI', dateOptions);
-            document.getElementById('current-date').innerText = dateString;
-
-            const grid = document.getElementById('products-grid');
-            
-            products.forEach(p => {
-                currentSelection[p.id] = 0;
-
-                // Definir ícono basado en tipo
-                let iconSVG = '';
-                if(p.type === 'diamond') {
-                    iconSVG = `<svg width="28" height="28" viewBox="0 0 24 24" fill="${p.color}"><path d="M12 2L2 9l10 13L22 9l-10-7zm0 3.3l5.5 3.7H6.5L12 5.3zm-7.6 5.7h4.8l-3.3 9.4-1.5-9.4zm6.6 9.4l3.3-9.4h-6.6l3.3 9.4zm4.2 0l-3.3-9.4h4.8l-1.5 9.4z"/></svg>`;
-                } else if(p.type === 'card') {
-                    iconSVG = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`;
-                } else {
-                    iconSVG = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path></svg>`;
-                }
-
-                grid.innerHTML += `
-                    <div class="gamer-card rounded-xl p-4 flex flex-col justify-between transition-transform hover:-translate-y-1" style="--theme-color: ${p.color}">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="bg-black/80 p-2 rounded-lg border border-slate-700">
-                                ${iconSVG}
-                            </div>
-                            <div class="text-right">
-                                <p class="text-[${p.color}] font-black text-lg">C$ ${p.price}</p>
-                            </div>
-                        </div>
-                        <h4 class="font-bold text-sm text-slate-200 leading-tight mb-3 h-10">${p.name}</h4>
-                        
-                        <!-- Controles interactivos -->
-                        <div class="flex items-center justify-between bg-black rounded-lg border border-slate-700 p-1">
-                            <button onclick="updateQtyBtn('${p.id}', -1)" class="w-10 h-10 flex items-center justify-center bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition-colors">
-                                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/></svg>
-                            </button>
-                            
-                            <!-- Input Directo -->
-                            <input type="number" id="qty-${p.id}" value="0" min="0" max="99" oninput="setQtyDirect('${p.id}', this.value)" class="w-12 h-10 bg-transparent text-center text-white font-bold text-xl focus:outline-none focus:text-[${p.color}] transition-colors border-none">
-                            
-                            <button onclick="updateQtyBtn('${p.id}', 1)" class="w-10 h-10 flex items-center justify-center bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition-colors">
-                                <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                `;
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-NI', { 
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' 
             });
-            renderCart();
+            renderProducts();
+            createEmbers();
         }
 
-        // --- Lógica de Cantidades ---
-        function updateQtyBtn(id, delta) {
-            let current = currentSelection[id] || 0;
-            setQtyDirect(id, current + delta);
+        function switchTab(tabId) {
+            activeTab = tabId;
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            renderProducts();
         }
 
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            const filtered = products.filter(p => p.category === activeTab);
+            
+            filtered.forEach(p => {
+                if(currentSelection[p.id] === undefined) currentSelection[p.id] = 0;
+                
+                grid.innerHTML += `
+                    <div class="gamer-card p-5 flex flex-col justify-between animate-slide-up" style="--theme-color: ${p.color}">
+                        
+                        <!-- Contenedor con Lupa para Visualizador -->
+                        <div class="product-image-container cursor-pointer group" onclick="openModal('${p.image}')">
+                            <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=FF'">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 backdrop-blur-sm">
+                                <svg width="36" height="36" fill="none" stroke="white" stroke-width="2" class="transform scale-50 group-hover:scale-100 transition-transform duration-300"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Título y Precio Centrados con Efectos -->
+                        <div class="mb-5 text-center px-2">
+                            <h4 class="font-black text-slate-100 text-lg sm:text-xl mb-1 uppercase tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">${p.name}</h4>
+                            <p class="text-3xl font-black price-glitz" style="--theme-color: ${p.color}">C$ ${p.price}</p>
+                        </div>
+
+                        <!-- Selector de Cantidad -->
+                        <div class="flex items-center justify-between bg-black/60 rounded-xl border border-white/10 p-1">
+                            <button onclick="updateQtyBtn('${p.id}', -1)" class="w-12 h-10 flex items-center justify-center bg-slate-800 text-white rounded-lg hover:bg-blue-600 transition-colors font-bold text-xl">-</button>
+                            <input type="number" id="qty-${p.id}" value="${currentSelection[p.id]}" min="0" oninput="setQtyDirect('${p.id}', this.value)" class="w-12 bg-transparent text-center text-white font-bold text-xl border-none focus:outline-none">
+                            <button onclick="updateQtyBtn('${p.id}', 1)" class="w-12 h-10 flex items-center justify-center bg-slate-800 text-white rounded-lg hover:bg-blue-600 transition-colors font-bold text-xl">+</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function updateQtyBtn(id, delta) { setQtyDirect(id, (currentSelection[id] || 0) + delta); }
         function setQtyDirect(id, value) {
-            let num = parseInt(value);
-            if (isNaN(num) || num < 0) num = 0;
-            if (num > 99) num = 99; // Límite razonable
-            
+            let num = Math.min(Math.max(parseInt(value) || 0, 0), 99);
             currentSelection[id] = num;
-            
-            const inputEl = document.getElementById(`qty-${id}`);
-            if(inputEl.value != num) inputEl.value = num; // Evitar saltos de cursor si ya es igual
-            
-            // Efecto visual
-            inputEl.classList.add('scale-110');
-            setTimeout(() => inputEl.classList.remove('scale-110'), 150);
-
+            const input = document.getElementById(`qty-${id}`);
+            if(input) input.value = num;
             calculateSubtotal();
         }
 
         function calculateSubtotal() {
             let subtotal = 0;
-            for (let id in currentSelection) {
-                if (currentSelection[id] > 0) {
-                    const product = products.find(p => p.id === id);
-                    subtotal += product.price * currentSelection[id];
-                }
-            }
-            document.getElementById('current-selection-total').innerText = subtotal.toLocaleString('en-US');
+            products.forEach(p => subtotal += (currentSelection[p.id] || 0) * p.price);
+            document.getElementById('current-selection-total').innerText = subtotal.toLocaleString();
         }
 
-        function validateId(input) {
-            input.value = input.value.replace(/[^0-9]/g, '');
-        }
+        function validateId(input) { input.value = input.value.replace(/[^0-9]/g, ''); }
 
-        // --- Gestión de Órdenes ---
         function addAccountToOrder() {
-            const idInput = document.getElementById('player-id');
-            const nameInput = document.getElementById('player-name');
-            const playerId = idInput.value.trim();
-            const playerName = nameInput.value.trim();
+            const idVal = document.getElementById('player-id').value;
+            const nameVal = document.getElementById('player-name').value;
+            if (!idVal || !nameVal) return showToast("Faltan datos del jugador (ID y Nick)", true);
 
-            if (!playerId || playerId.length < 5) {
-                showToast("Ingresa un ID numérico válido.", true);
-                idInput.focus();
-                return;
-            }
-            if (!playerName) {
-                showToast("Ingresa el Nombre del jugador.", true);
-                nameInput.focus();
-                return;
-            }
+            let items = products.filter(p => currentSelection[p.id] > 0).map(p => ({
+                product: p, qty: currentSelection[p.id], lineTotal: p.price * currentSelection[p.id]
+            }));
 
-            let subtotal = 0;
-            let items = [];
+            if (!items.length) return showToast("Selecciona al menos un paquete", true);
 
-            for (let id in currentSelection) {
-                if (currentSelection[id] > 0) {
-                    const product = products.find(p => p.id === id);
-                    const lineTotal = product.price * currentSelection[id];
-                    subtotal += lineTotal;
-                    items.push({
-                        product: product,
-                        qty: currentSelection[id],
-                        lineTotal: lineTotal
-                    });
-                }
-            }
-
-            if (items.length === 0) {
-                showToast("Agrega cantidades en los paquetes deseados.", true);
-                return;
-            }
-
-            globalOrders.push({
-                playerId: playerId,
-                playerName: playerName,
-                items: items,
-                total: subtotal
-            });
-
-            // Limpiar
-            idInput.value = '';
-            nameInput.value = '';
-            for (let id in currentSelection) {
-                setQtyDirect(id, 0);
-            }
-
-            showToast("✅ Cuenta añadida. Puedes agregar otra si lo deseas.", false);
-            renderCart();
-        }
-
-        // Función nueva: Editar una orden existente
-        function editOrder(index) {
-            const order = globalOrders[index];
+            globalOrders.push({ idVal, nameVal, items, total: items.reduce((a, b) => a + b.lineTotal, 0) });
             
-            // Cargar datos al formulario
-            document.getElementById('player-id').value = order.playerId;
-            document.getElementById('player-name').value = order.playerName;
-
-            // Resetear la selección actual a 0
-            for (let id in currentSelection) {
-                setQtyDirect(id, 0);
-            }
-
-            // Aplicar las cantidades de la orden a editar
-            order.items.forEach(item => {
-                setQtyDirect(item.product.id, item.qty);
-            });
-
-            // Eliminar la orden del carrito para evitar duplicados al guardar
-            globalOrders.splice(index, 1);
-            renderCart();
-
-            // Scroll hacia arriba
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            showToast("✏️ Orden cargada. Modifica y vuelve a presionar Añadir.", false);
-        }
-
-        function removeOrder(index) {
-            globalOrders.splice(index, 1);
+            // Sonido Gamer
+            document.getElementById('fx-add').currentTime = 0;
+            document.getElementById('fx-add').play();
+            
+            // Reset
+            document.getElementById('player-id').value = '';
+            document.getElementById('player-name').value = '';
+            products.forEach(p => currentSelection[p.id] = 0);
+            renderProducts();
+            calculateSubtotal();
+            
+            showToast("✅ Cuenta añadida al carrito exitosamente", false);
             renderCart();
         }
+
+        function removeOrder(index) { globalOrders.splice(index, 1); renderCart(); }
 
         function renderCart() {
             const listEl = document.getElementById('order-list');
-            let globalTotal = 0;
-
-            if (globalOrders.length === 0) {
-                listEl.innerHTML = `
-                    <div class="text-center text-slate-500 text-sm mt-10 flex flex-col items-center">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-12 h-12 mb-3 opacity-30"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                        El carrito está vacío.
-                    </div>`;
-                updateCheckoutButton(0);
-                return;
-            }
-
-            listEl.innerHTML = '';
+            let total = 0;
+            listEl.innerHTML = globalOrders.length ? '' : '<div class="text-center opacity-30 py-10"><p>No hay cuentas añadidas aún</p></div>';
             
-            globalOrders.forEach((order, index) => {
-                globalTotal += order.total;
-                
-                let itemsHTML = order.items.map(i => {
-                    let icon = i.product.type === 'diamond' ? '💎' : (i.product.type === 'pass' ? '🎟️' : '💳');
-                    return `<div class="flex justify-between text-xs text-slate-300 mt-1.5 pl-2 border-l-2 border-slate-700">
-                                <span><b class="text-white">${i.qty}x</b> ${icon} ${i.product.name}</span>
-                                <span class="text-slate-400">C$${i.lineTotal}</span>
-                            </div>`;
-                }).join('');
-
+            globalOrders.forEach((o, i) => {
+                total += o.total;
                 listEl.innerHTML += `
-                    <div class="bg-black/60 border border-slate-700 rounded-xl p-3 relative group animate-slide-up hover:border-orange-500/50 transition-colors">
-                        
-                        <!-- Botones de Acción: Editar y Eliminar -->
-                        <div class="absolute top-2 right-2 flex gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                            <button onclick="editOrder(${index})" class="bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white p-1.5 rounded transition-colors" title="Editar este pedido">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                            </button>
-                            <button onclick="removeOrder(${index})" class="bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white p-1.5 rounded transition-colors" title="Eliminar">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                            </button>
+                    <div class="bg-blue-950/20 border border-blue-900/30 rounded-2xl p-4 animate-slide-up relative group">
+                        <button onclick="removeOrder(${i})" class="absolute top-2 right-2 text-slate-600 hover:text-red-500 p-1">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </button>
+                        <p class="text-blue-400 font-bold uppercase tracking-tighter text-base">${o.nameVal}</p>
+                        <p class="text-[11px] font-mono text-slate-400 mb-2">ID: ${o.idVal}</p>
+                        <div class="space-y-1 border-t border-slate-800/50 pt-2 mb-2">
+                            ${o.items.map(it => `<div class="text-[12px] text-slate-300 flex justify-between"><span>${it.qty}x ${it.product.name}</span><span class="font-bold">C$${it.lineTotal}</span></div>`).join('')}
                         </div>
-
-                        <div class="mb-2 pr-16">
-                            <p class="text-orange-400 font-bold text-sm tracking-wide">${order.playerName}</p>
-                            <p class="text-slate-400 font-mono text-xs">ID: ${order.playerId}</p>
-                        </div>
-                        <div class="bg-slate-900/80 p-2 rounded-lg mb-2">
-                            ${itemsHTML}
-                        </div>
-                        <div class="text-right text-sm font-bold text-white mt-2">
-                            Subtotal: <span class="text-orange-500">C$ ${order.total}</span>
-                        </div>
-                    </div>
-                `;
+                        <p class="text-right font-black text-white text-lg">C$ ${o.total}</p>
+                    </div>`;
             });
-
-            document.getElementById('global-total').innerText = globalTotal.toLocaleString('en-US');
-            updateCheckoutButton(globalTotal);
-            listEl.scrollTop = listEl.scrollHeight;
+            document.getElementById('global-total').innerText = total.toLocaleString();
+            updateCheckoutButton(total);
         }
 
         function updateCheckoutButton(total) {
             const btn = document.getElementById('btn-checkout');
             if (total > 0) {
-                btn.classList.remove('bg-slate-800', 'text-slate-500', 'cursor-not-allowed', 'border-slate-700');
-                btn.classList.add('bg-[#25D366]', 'text-white', 'hover:bg-green-500', 'border-green-400', 'shadow-[0_0_20px_rgba(37,211,102,0.4)]');
+                btn.className = "btn-shine btn-checkout-active w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-black text-lg py-5 rounded-2xl transition-all flex items-center justify-center gap-3 cursor-pointer relative z-10";
+                btn.innerHTML = `<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> PROCESAR PEDIDO`;
+                btn.disabled = false;
             } else {
-                btn.classList.add('bg-slate-800', 'text-slate-500', 'cursor-not-allowed', 'border-slate-700');
-                btn.classList.remove('bg-[#25D366]', 'text-white', 'hover:bg-green-500', 'border-green-400', 'shadow-[0_0_20px_rgba(37,211,102,0.4)]');
+                btn.className = "w-full bg-slate-800 text-slate-500 font-black text-lg py-5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-slate-700 cursor-not-allowed";
+                btn.innerHTML = `<svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg> PROCESAR PEDIDO`;
+                btn.disabled = true;
             }
         }
 
         function enviarPedidoFinal() {
-            if (globalOrders.length === 0) return;
-
-            let globalTotal = 0;
-            const fecha = new Date().toLocaleString('es-NI', { dateStyle: 'short', timeStyle: 'short' });
+            if (!globalOrders.length) return;
             
-            let msg = `*ASTRAL NEXUS MULTISERVICIOS* 🚀\n`;
-            msg += `_Recargas Free Fire | Fecha: ${fecha}_\n`;
-            msg += `━━━━━━━━━━━━━━━━━━━\n\n`;
-
-            globalOrders.forEach((order, i) => {
-                globalTotal += order.total;
-                msg += `👤 *Cuenta ${i + 1}*\n`;
-                msg += `▪ *ID:* \`${order.playerId}\`\n`;
-                msg += `▪ *Nombre:* ${order.playerName}\n`;
-                
-                order.items.forEach(item => {
-                    let icon = item.product.type === 'diamond' ? '💎' : (item.product.type === 'pass' ? '🎟️' : '💳');
-                    msg += `  - ${item.qty}x ${icon} ${item.product.name}\n`;
+            const btn = document.getElementById('btn-checkout');
+            const originalHTML = btn.innerHTML;
+            
+            // Animación de Carga Interactiva
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> PREPARANDO WHATSAPP...`;
+            btn.classList.add('scale-[0.98]', 'opacity-90');
+            
+            setTimeout(() => {
+                let msg = `*ASTRAL NEXUS MULTISERVICIOS* 🚀\n━━━━━━━━━━━━━━━━━━━\n\n`;
+                globalOrders.forEach((o, i) => {
+                    msg += `👤 *CUENTA ${i + 1}*\n▪ ID: \`${o.idVal}\`\n▪ Nick: ${o.nameVal}\n`;
+                    o.items.forEach(it => msg += `  - ${it.qty}x ${it.product.name}\n`);
+                    msg += `\n`;
                 });
-                msg += `\n`;
-            });
-
-            msg += `━━━━━━━━━━━━━━━━━━━\n`;
-            msg += `💰 *TOTAL A DEPOSITAR: C$ ${globalTotal}*\n\n`;
-            msg += `✅ _Por favor, envía la captura/comprobante del depósito para procesar las recargas inmediatamente._`;
-
-            const urlWhatsApp = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
-            
-            showToast("Abriendo WhatsApp...", false);
-            setTimeout(() => { window.open(urlWhatsApp, '_blank'); }, 600);
+                msg += `━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GLOBAL: C$ ${document.getElementById('global-total').innerText}*\n\n_⚠️ El total y paquetes no deben ser modificados._`;
+                
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+                
+                // Restaurar botón después de enviar
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('scale-[0.98]', 'opacity-90');
+                }, 1000);
+                
+            }, 800); // 800ms de tiempo de espera simulado para efecto
         }
 
-        // --- Alertas Toast ---
-        function showToast(message, isError = true) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            const bgColor = isError ? 'bg-red-600 border-red-400' : 'bg-green-600 border-green-400';
-            const icon = isError 
-                ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-                : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+        function showToast(m, err) {
+            const t = document.createElement('div');
+            t.className = `${err ? 'bg-red-600' : 'bg-blue-700'} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-slide-up text-center text-sm`;
+            t.innerText = m;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
 
-            toast.className = `flex items-center gap-3 ${bgColor} border backdrop-blur-md text-white px-6 py-3 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] font-bold animate-slide-up z-50`;
-            toast.innerHTML = `${icon} <span>${message}</span>`;
-            
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-20px)';
-                toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+        function createEmbers() {
+            const container = document.getElementById('particles-bg');
+            for(let i=0; i<25; i++) {
+                let ember = document.createElement('div');
+                ember.className = 'ember';
+                let size = Math.random() * 4 + 2;
+                ember.style.width = size + 'px'; ember.style.height = size + 'px';
+                ember.style.left = Math.random() * 100 + 'vw';
+                ember.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                ember.style.animationDelay = (Math.random() * 5) + 's';
+                ember.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+                container.appendChild(ember);
+            }
         }
 
         window.onload = initApp;
     </script>
 </body>
-
 </html>
