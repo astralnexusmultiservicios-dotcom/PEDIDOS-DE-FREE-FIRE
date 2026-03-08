@@ -153,6 +153,24 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        /* --- BORDE ANIMADO PARA EL MODAL --- */
+        .modal-border-glow {
+            position: relative;
+            z-index: 1;
+        }
+        .modal-border-glow::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(60deg, transparent, var(--primary-blue), transparent, var(--primary-violet));
+            background-size: 300% 300%;
+            z-index: -1;
+            border-radius: 26px; /* Ligeramente mayor al rounded-3xl (24px) */
+            animation: animateBorder 4s ease infinite;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
         /* --- BOTONES Y PESTAÑAS ANIMADOS --- */
         .btn-shine {
             position: relative;
@@ -228,6 +246,55 @@
             <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
         <img id="modal-img" src="" class="max-w-[95vw] max-h-[85vh] object-contain drop-shadow-[0_0_40px_rgba(59,130,246,0.6)] transform scale-90 transition-transform duration-300" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- Nuevo Modal de Edición de Pedido -->
+    <div id="edit-modal" class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/90 backdrop-blur-sm transition-opacity opacity-0" onclick="closeEditModal(event)">
+        <div id="edit-modal-content" class="glass-panel modal-border-glow w-11/12 max-w-lg max-h-[85vh] rounded-3xl border border-blue-500/50 flex flex-col overflow-hidden relative transform scale-95 transition-transform duration-300 shadow-[0_0_50px_rgba(59,130,246,0.3)]" onclick="event.stopPropagation()">
+            <!-- Header Modal -->
+            <div class="p-5 border-b border-blue-900/50 flex justify-between items-center bg-gradient-to-r from-blue-900/40 to-black">
+                <h3 class="text-xl font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    Editar Pedido
+                </h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-400 transition-colors"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+            
+            <!-- Cuerpo Scrollable -->
+            <div class="p-5 overflow-y-auto space-y-4 flex-grow bg-black/40">
+                <div class="grid grid-cols-2 gap-4 mb-2">
+                    <div>
+                        <label class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">ID numérico</label>
+                        <input type="number" id="edit-id" class="w-full bg-black/60 border border-slate-700 rounded-xl px-3 py-2 text-white focus:border-blue-500 focus:outline-none font-mono text-sm" oninput="validateId(this)">
+                    </div>
+                    <div>
+                        <label class="text-violet-400 text-[10px] font-bold uppercase tracking-widest">Nick</label>
+                        <input type="text" id="edit-name" class="w-full bg-black/60 border border-slate-700 rounded-xl px-3 py-2 text-white focus:border-violet-500 focus:outline-none text-sm">
+                    </div>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-800 pb-1 mb-2">
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest">Paquetes Disponibles</span>
+                    <button onclick="clearEditProducts()" class="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase tracking-widest flex items-center gap-1 transition-colors">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        Vaciar Todo
+                    </button>
+                </div>
+                <div id="edit-products-list" class="space-y-2">
+                    <!-- Productos se renderizan aquí por JS -->
+                </div>
+            </div>
+            
+            <!-- Footer Modal -->
+            <div class="p-5 border-t border-blue-900/50 bg-gradient-to-r from-black to-slate-900 flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest">Subtotal de la cuenta</p>
+                    <p class="text-xl font-black text-blue-400">C$ <span id="edit-total">0</span></p>
+                </div>
+                <button onclick="saveEditOrder()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-sm transition-colors shadow-[0_0_15px_rgba(59,130,246,0.4)]">
+                    Guardar Cambios
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
@@ -368,9 +435,20 @@
                 <div id="order-list" class="flex-grow overflow-y-auto space-y-4 mb-6 max-h-[50vh] pr-2"></div>
 
                 <div class="pt-6 border-t border-slate-800">
-                    <div class="flex justify-between items-center mb-6 px-2">
-                        <span class="text-slate-400 font-bold uppercase text-xs tracking-widest">Total Global</span>
-                        <span class="text-3xl font-black text-white">C$ <span id="global-total" class="text-blue-400">0</span></span>
+                    <div class="flex justify-between items-center mb-2 px-2">
+                        <span class="text-slate-400 font-bold uppercase text-xs tracking-widest">Subtotal</span>
+                        <span class="text-xl font-bold text-slate-300">C$ <span id="cart-subtotal">0</span></span>
+                    </div>
+                    
+                    <!-- Contenedor Dinámico de Descuento -->
+                    <div id="discount-container" class="hidden justify-between items-center mb-3 px-2">
+                        <span id="discount-label" class="text-emerald-400 font-bold uppercase text-[10px] tracking-widest bg-emerald-900/30 px-2 py-0.5 rounded border border-emerald-500/30">Descuento</span>
+                        <span class="text-xl font-bold text-emerald-400">- C$ <span id="cart-discount">0</span></span>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-6 px-2 border-t border-slate-700/50 pt-3">
+                        <span class="text-blue-400 font-black uppercase text-sm tracking-widest">Total a Pagar</span>
+                        <span class="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">C$ <span id="global-total" class="text-blue-400">0</span></span>
                     </div>
 
                     <p class="text-[10px] text-center text-slate-500 uppercase tracking-widest mb-3">Tu solicitud será verificada vía WhatsApp</p>
@@ -449,11 +527,11 @@
         const products = [
             // Diamantes
             { id: 'd100', category: 'diamond', name: '100+10 Diamantes', price: 38, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/tdox1df38bo3tgsocxu6q/image_1772916122952.png?rlkey=b9mwpym9h1faemlm8bxewklfp&st=st1txhf0&raw=1' },
-            { id: 'd310', category: 'diamond', name: '310+31 Diamantes', price: 115, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/ecgi09ijx7zs3elxwi7y4/image_1772916122952-1.png?rlkey=v297zoyo1vr7jf04sj14hhwlh&st=xuyea2vd&raw=1' },
-            { id: 'd520', category: 'diamond', name: '520+52 Diamantes', price: 175, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/nn9apv1k8yor5qz5po8s5/image_1772916122952-2.png?rlkey=7fjv3bhqibn2btdeqdw4113i4&st=mtoze6sz&raw=1' },
-            { id: 'd1060', category: 'diamond', name: '1,060+106 Diamantes', price: 335, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/mkls8ndz8ffgkzjvx64j8/image_1772916122952-4.png?rlkey=zozedza69urinjjkuqk16zr8f&st=lu5mi1v7&raw=1' },
-            { id: 'd2180', category: 'diamond', name: '2,180+218 Diamantes', price: 635, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/fvrtjxgwuvn3bv4xveclh/image_1772916122952-5.png?rlkey=455pcid1x6urd4czv5c9d75jf&st=gu07m28u&raw=1' },
-            { id: 'd5600', category: 'diamond', name: '5,600+516 Diamantes', price: 1650, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/k44770iehaqw23f59z4a0/image_1772916122952-6.png?rlkey=gba9m1ttqvkcviuc63dked3ot&st=h4p9kui3&raw=1' },
+            { id: 'd310', category: 'diamond', name: '310+31 Diamantes', price: 114, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/ecgi09ijx7zs3elxwi7y4/image_1772916122952-1.png?rlkey=v297zoyo1vr7jf04sj14hhwlh&st=xuyea2vd&raw=1' },
+            { id: 'd520', category: 'diamond', name: '520+52 Diamantes', price: 170, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/nn9apv1k8yor5qz5po8s5/image_1772916122952-2.png?rlkey=7fjv3bhqibn2btdeqdw4113i4&st=mtoze6sz&raw=1' },
+            { id: 'd1060', category: 'diamond', name: '1,060+106 Diamantes', price: 320, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/mkls8ndz8ffgkzjvx64j8/image_1772916122952-4.png?rlkey=zozedza69urinjjkuqk16zr8f&st=lu5mi1v7&raw=1' },
+            { id: 'd2180', category: 'diamond', name: '2,180+218 Diamantes', price: 625, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/fvrtjxgwuvn3bv4xveclh/image_1772916122952-5.png?rlkey=455pcid1x6urd4czv5c9d75jf&st=gu07m28u&raw=1' },
+            { id: 'd5600', category: 'diamond', name: '5,600+516 Diamantes', price: 1625, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/k44770iehaqw23f59z4a0/image_1772916122952-6.png?rlkey=gba9m1ttqvkcviuc63dked3ot&st=h4p9kui3&raw=1' },
             
             // Membresías
             { id: 'msb', category: 'card', name: 'Semanal Básica', price: 25, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/ahq38o0mw6s2qqcvb6kti/image_1772916122952-8.png?rlkey=6267ei3elqqf47gt8vdjc6akb&st=tahnif9f&raw=1' },
@@ -461,13 +539,17 @@
             { id: 'mm', category: 'card', name: 'Membresía Mensual', price: 365, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/ryb89djsol1a2vly7lxur/image_1772916122952-10.png?rlkey=6rbdtojsazf6d17qelpsrb234&st=pjigbc4v&raw=1' },
             
             // Pase
-            { id: 'pb', category: 'pass', name: 'Pase Booyahh', price: 60, color: '#f43f5e', image: 'https://www.dropbox.com/scl/fi/jkburejmve5ftohs9vupu/image_1772916122952-7.png?rlkey=bc7uvkx839min1rbik2e3xm06&st=wlaq1zof&raw=1' }
+            { id: 'pb', category: 'pass', name: 'Pase Booyahh', price: 50, color: '#f43f5e', image: 'https://www.dropbox.com/scl/fi/jkburejmve5ftohs9vupu/image_1772916122952-7.png?rlkey=bc7uvkx839min1rbik2e3xm06&st=wlaq1zof&raw=1' }
         ];
 
         let currentSelection = {}; 
         let globalOrders = []; 
         let activeTab = 'diamond';
         const whatsappNumber = "50581244993";
+
+        // --- VARIABLES DE EDICIÓN EN MODAL ---
+        let editingIndex = -1;
+        let tempEditSelection = {};
 
         function initApp() {
             document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-NI', { 
@@ -565,21 +647,187 @@
             renderCart();
         }
 
+        // --- SISTEMA DE CÁLCULO DE DESCUENTOS ---
+        function calculateCartTotals() {
+            let subtotal = 0;
+            let totalPackages = 0;
+            
+            globalOrders.forEach(o => {
+                subtotal += o.total;
+                o.items.forEach(it => {
+                    totalPackages += it.qty;
+                });
+            });
+
+            let discountPercent = 0;
+            
+            // Nueva regla: Basada exclusivamente en la cantidad de paquetes
+            if (totalPackages >= 75) {
+                discountPercent = 0.01; // 1%
+            } else if (totalPackages >= 50) {
+                discountPercent = 0.005; // 0.5%
+            } else if (totalPackages >= 25) {
+                discountPercent = 0.0025; // 0.25%
+            }
+
+            let discountAmount = Math.round(subtotal * discountPercent);
+            let finalTotal = subtotal - discountAmount;
+
+            return { subtotal, totalPackages, discountPercent, discountAmount, finalTotal };
+        }
+
         function removeOrder(index) { globalOrders.splice(index, 1); renderCart(); }
+
+        // --- SISTEMA DE EDICIÓN EN MODAL (NUEVO) ---
+        function editOrder(index) {
+            editingIndex = index;
+            const o = globalOrders[index];
+            
+            document.getElementById('edit-id').value = o.idVal;
+            document.getElementById('edit-name').value = o.nameVal;
+            
+            // Iniciar selección temporal en 0 para todos los productos
+            products.forEach(p => tempEditSelection[p.id] = 0);
+            
+            // Cargar los productos que ya tenía en el carrito
+            o.items.forEach(it => tempEditSelection[it.product.id] = it.qty);
+            
+            renderEditProducts();
+            calculateEditTotal();
+            
+            // Mostrar Modal con animación
+            const modal = document.getElementById('edit-modal');
+            const content = document.getElementById('edit-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeEditModal(e) {
+            // Evita cerrar si se clickea dentro del panel
+            if (e && e.target.id === 'edit-modal-content') return;
+            
+            const modal = document.getElementById('edit-modal');
+            const content = document.getElementById('edit-modal-content');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                editingIndex = -1;
+            }, 300);
+        }
+
+        function renderEditProducts() {
+            const list = document.getElementById('edit-products-list');
+            list.innerHTML = '';
+            
+            // Renderizamos todos los productos por si quiere agregar uno distinto al pedido actual
+            products.forEach(p => {
+                const qty = tempEditSelection[p.id] || 0;
+                list.innerHTML += `
+                    <div id="edit-item-container-${p.id}" class="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border ${qty > 0 ? 'border-blue-500/60 bg-blue-900/20' : 'border-slate-800'} transition-colors">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.image}" class="w-10 h-10 object-contain drop-shadow-md">
+                            <div>
+                                <p class="text-sm font-bold text-slate-200 leading-tight">${p.name}</p>
+                                <p class="text-xs text-blue-400 font-black">C$ ${p.price}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center bg-black/60 rounded-lg p-1 border border-slate-700">
+                            <button onclick="updateEditQty('${p.id}', -1)" class="w-8 h-8 flex items-center justify-center bg-slate-800 text-white rounded hover:bg-blue-600 font-bold transition-colors">-</button>
+                            <input type="number" id="edit-qty-${p.id}" value="${qty}" min="0" oninput="setEditQtyDirect('${p.id}', this.value)" class="w-10 bg-transparent text-center text-white font-bold text-sm border-none focus:outline-none">
+                            <button onclick="updateEditQty('${p.id}', 1)" class="w-8 h-8 flex items-center justify-center bg-slate-800 text-white rounded hover:bg-blue-600 font-bold transition-colors">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateEditQty(id, delta) {
+            let num = Math.min(Math.max((tempEditSelection[id] || 0) + delta, 0), 99);
+            const input = document.getElementById(`edit-qty-${id}`);
+            if (input) input.value = num;
+            setEditQtyDirect(id, num);
+        }
+
+        function setEditQtyDirect(id, value) {
+            let num = Math.min(Math.max(parseInt(value) || 0, 0), 99);
+            tempEditSelection[id] = num;
+            
+            // Actualizar clases visuales sin re-renderizar todo para no perder el foco del teclado
+            const container = document.getElementById(`edit-item-container-${id}`);
+            if (container) {
+                if (num > 0) {
+                    container.classList.add('border-blue-500/60', 'bg-blue-900/20');
+                    container.classList.remove('border-slate-800');
+                } else {
+                    container.classList.remove('border-blue-500/60', 'bg-blue-900/20');
+                    container.classList.add('border-slate-800');
+                }
+            }
+            calculateEditTotal();
+        }
+
+        function clearEditProducts() {
+            products.forEach(p => tempEditSelection[p.id] = 0);
+            renderEditProducts();
+            calculateEditTotal();
+        }
+
+        function calculateEditTotal() {
+            let subtotal = 0;
+            products.forEach(p => subtotal += (tempEditSelection[p.id] || 0) * p.price);
+            document.getElementById('edit-total').innerText = subtotal.toLocaleString();
+        }
+
+        function saveEditOrder() {
+            const idVal = document.getElementById('edit-id').value;
+            const nameVal = document.getElementById('edit-name').value;
+            
+            if (!idVal || !nameVal) return showToast("Faltan datos de jugador (ID y Nick)", true);
+
+            let newItems = products.filter(p => tempEditSelection[p.id] > 0).map(p => ({
+                product: p, qty: tempEditSelection[p.id], lineTotal: p.price * tempEditSelection[p.id]
+            }));
+
+            if (!newItems.length) {
+                return showToast("Debes tener al menos un paquete para esta cuenta.", true);
+            }
+
+            // Sobreescribir la cuenta editada
+            globalOrders[editingIndex] = {
+                idVal, nameVal, items: newItems, total: newItems.reduce((a, b) => a + b.lineTotal, 0)
+            };
+            
+            renderCart();
+            closeEditModal();
+            showToast("✅ Pedido modificado con éxito", false);
+        }
 
         function renderCart() {
             const listEl = document.getElementById('order-list');
-            let total = 0;
             listEl.innerHTML = globalOrders.length ? '' : '<div class="text-center opacity-30 py-10"><p>No hay cuentas añadidas aún</p></div>';
             
             globalOrders.forEach((o, i) => {
-                total += o.total;
                 listEl.innerHTML += `
                     <div class="bg-blue-950/20 border border-blue-900/30 rounded-2xl p-4 animate-slide-up relative group">
-                        <button onclick="removeOrder(${i})" class="absolute top-2 right-2 text-slate-600 hover:text-red-500 p-1">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                        </button>
-                        <p class="text-blue-400 font-bold uppercase tracking-tighter text-base">${o.nameVal}</p>
+                        <div class="absolute top-2 right-2 flex gap-1">
+                            <button onclick="editOrder(${i})" class="text-slate-500 hover:text-blue-400 p-1.5 rounded-lg hover:bg-blue-900/30 transition-all" title="Editar Pedido">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
+                            <button onclick="removeOrder(${i})" class="text-slate-600 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-900/30 transition-all" title="Eliminar Pedido">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <p class="text-blue-400 font-bold uppercase tracking-tighter text-base pr-16">${o.nameVal}</p>
                         <p class="text-[11px] font-mono text-slate-400 mb-2">ID: ${o.idVal}</p>
                         <div class="space-y-1 border-t border-slate-800/50 pt-2 mb-2">
                             ${o.items.map(it => `<div class="text-[12px] text-slate-300 flex justify-between"><span>${it.qty}x ${it.product.name}</span><span class="font-bold">C$${it.lineTotal}</span></div>`).join('')}
@@ -587,8 +835,27 @@
                         <p class="text-right font-black text-white text-lg">C$ ${o.total}</p>
                     </div>`;
             });
-            document.getElementById('global-total').innerText = total.toLocaleString();
-            updateCheckoutButton(total);
+
+            const totals = calculateCartTotals();
+            
+            // Actualizar Subtotal
+            document.getElementById('cart-subtotal').innerText = totals.subtotal.toLocaleString();
+            
+            // Actualizar Descuento en la UI
+            const discountContainer = document.getElementById('discount-container');
+            if (totals.discountAmount > 0) {
+                discountContainer.classList.remove('hidden');
+                discountContainer.classList.add('flex');
+                document.getElementById('discount-label').innerText = `Descuento (${totals.discountPercent * 100}%) x${totals.totalPackages} paq.`;
+                document.getElementById('cart-discount').innerText = totals.discountAmount.toLocaleString();
+            } else {
+                discountContainer.classList.add('hidden');
+                discountContainer.classList.remove('flex');
+            }
+
+            // Actualizar Total Final
+            document.getElementById('global-total').innerText = totals.finalTotal.toLocaleString();
+            updateCheckoutButton(totals.finalTotal);
         }
 
         function updateCheckoutButton(total) {
@@ -609,6 +876,7 @@
             
             const btn = document.getElementById('btn-checkout');
             const originalHTML = btn.innerHTML;
+            const totals = calculateCartTotals(); // Recalcular antes de enviar por seguridad
             
             // Animación de Carga Interactiva
             btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> PREPARANDO WHATSAPP...`;
@@ -621,7 +889,16 @@
                     o.items.forEach(it => msg += `  - ${it.qty}x ${it.product.name}\n`);
                     msg += `\n`;
                 });
-                msg += `━━━━━━━━━━━━━━━━━━━\n💰 *TOTAL GLOBAL: C$ ${document.getElementById('global-total').innerText}*\n\n_⚠️ El total y paquetes no deben ser modificados._`;
+                
+                msg += `━━━━━━━━━━━━━━━━━━━\n`;
+                
+                // Aplicar el bloque de descuento al texto de WhatsApp si existe
+                if (totals.discountAmount > 0) {
+                    msg += `📊 *Subtotal:* C$ ${totals.subtotal.toLocaleString()}\n`;
+                    msg += `🎁 *Descuento Aplicado (${totals.discountPercent * 100}%):* -C$ ${totals.discountAmount.toLocaleString()}\n`;
+                }
+                
+                msg += `💰 *TOTAL A PAGAR: C$ ${totals.finalTotal.toLocaleString()}*\n\n_⚠️ El total y paquetes no deben ser modificados._`;
                 
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
                 
@@ -631,7 +908,7 @@
                     btn.classList.remove('scale-[0.98]', 'opacity-90');
                 }, 1000);
                 
-            }, 800); // 800ms de tiempo de espera simulado para efecto
+            }, 800);
         }
 
         function showToast(m, err) {
