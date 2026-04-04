@@ -165,7 +165,7 @@
             background: linear-gradient(60deg, transparent, var(--primary-blue), transparent, var(--primary-violet));
             background-size: 300% 300%;
             z-index: -1;
-            border-radius: 26px; /* Ligeramente mayor al rounded-3xl (24px) */
+            border-radius: 26px;
             animation: animateBorder 4s ease infinite;
             opacity: 0.6;
             pointer-events: none;
@@ -342,7 +342,7 @@
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="bg-blue-600 shadow-[0_0_10px_#3b82f6] text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">3</span> 
-                        <div>Haz clic en procesar y envía el mensaje generado por <b>WhatsApp</b>.</div>
+                        <div>Selecciona tu <b>Método de Pago</b>, haz clic en procesar y envía el mensaje generado por WhatsApp.</div>
                     </li>
                 </ul>
             </div>
@@ -432,23 +432,57 @@
                     Carrito de Pedido
                 </h2>
 
-                <div id="order-list" class="flex-grow overflow-y-auto space-y-4 mb-6 max-h-[50vh] pr-2"></div>
+                <div id="order-list" class="flex-grow overflow-y-auto space-y-4 mb-4 max-h-[40vh] pr-2"></div>
 
-                <div class="pt-6 border-t border-slate-800">
+                <!-- SECCIÓN: MÉTODOS DE PAGO -->
+                <div class="mt-2 pt-4 border-t border-slate-700/50">
+                    <span class="text-blue-400 font-bold uppercase text-[10px] tracking-widest mb-3 block text-center">1. Selecciona tu Método de Pago</span>
+                    
+                    <div class="grid grid-cols-4 gap-2 mb-3" id="payment-methods-grid">
+                        <!-- JS inyecta los métodos aquí -->
+                    </div>
+
+                    <!-- CAJA DE DATOS BANCARIOS (Oculta por defecto) -->
+                    <div id="payment-details-box" class="hidden bg-gradient-to-br from-slate-900 to-black border border-slate-700 rounded-xl p-4 relative group transition-all mb-4 shadow-inner">
+                        <button onclick="copyPaymentInfo()" class="absolute top-3 right-3 text-slate-400 hover:text-white bg-slate-800 hover:bg-blue-600 p-2 rounded-lg transition-colors shadow-md" title="Copiar Datos">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                        <div class="flex items-center gap-2 mb-2">
+                            <p class="text-[11px] text-blue-400 uppercase tracking-widest font-black" id="payment-details-title">Datos de Transferencia</p>
+                        </div>
+                        <pre class="text-xs text-slate-300 font-mono whitespace-pre-wrap leading-relaxed" id="payment-details-text"></pre>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800">
                     <div class="flex justify-between items-center mb-2 px-2">
                         <span class="text-slate-400 font-bold uppercase text-xs tracking-widest">Subtotal</span>
                         <span class="text-xl font-bold text-slate-300">C$ <span id="cart-subtotal">0</span></span>
                     </div>
                     
                     <!-- Contenedor Dinámico de Descuento -->
-                    <div id="discount-container" class="hidden justify-between items-center mb-3 px-2">
+                    <div id="discount-container" class="hidden justify-between items-center mb-2 px-2">
                         <span id="discount-label" class="text-emerald-400 font-bold uppercase text-[10px] tracking-widest bg-emerald-900/30 px-2 py-0.5 rounded border border-emerald-500/30">Descuento</span>
                         <span class="text-xl font-bold text-emerald-400">- C$ <span id="cart-discount">0</span></span>
                     </div>
 
-                    <div class="flex justify-between items-center mb-6 px-2 border-t border-slate-700/50 pt-3">
+                    <!-- PAYPAL FEE DISPLAY -->
+                    <div id="paypal-fee-container" class="hidden justify-between items-center mb-2 px-2 border-t border-slate-800/50 pt-2">
+                        <span class="text-amber-400 font-bold text-[10px] tracking-widest uppercase">Comisión PayPal (5.4% + $0.35)</span>
+                        <span class="text-sm font-bold text-amber-400">+ $<span id="paypal-fee-amount">0.00</span></span>
+                    </div>
+
+                    <!-- TOTAL GLOBAL DISPLAY -->
+                    <div class="flex justify-between items-end mb-6 px-2 border-t border-slate-700/50 pt-3">
                         <span class="text-blue-400 font-black uppercase text-sm tracking-widest">Total a Pagar</span>
-                        <span class="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">C$ <span id="global-total" class="text-blue-400">0</span></span>
+                        <div class="text-right">
+                            <div id="usd-total-container" class="hidden text-xs font-bold text-slate-400 mb-1">
+                                ≈ C$ <span id="usd-equivalent-cordobas">0</span>
+                            </div>
+                            <div class="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" id="global-total-display">
+                                C$ <span class="text-blue-400">0</span>
+                            </div>
+                        </div>
                     </div>
 
                     <p class="text-[10px] text-center text-slate-500 uppercase tracking-widest mb-3">Tu solicitud será verificada vía WhatsApp</p>
@@ -490,14 +524,12 @@
             }
         }
 
-        // --- SISTEMA DE MODAL PARA IMÁGENES ---
         function openModal(src) {
             const modal = document.getElementById('image-modal');
             const img = document.getElementById('modal-img');
             img.src = src;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            // Timeout para permitir que la clase 'flex' se aplique antes de la transición de opacidad
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 img.classList.remove('scale-90');
@@ -506,16 +538,12 @@
         }
 
         function closeModal(e) {
-            // Evitar que cierre si hacen clic en la imagen en sí
             if (e && e.target.id === 'modal-img') return;
-            
             const modal = document.getElementById('image-modal');
             const img = document.getElementById('modal-img');
-            
             modal.classList.add('opacity-0');
             img.classList.remove('scale-100');
             img.classList.add('scale-90');
-            
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
@@ -525,23 +553,63 @@
 
         // --- CATÁLOGO DE PRODUCTOS ---
         const products = [
-            // Diamantes
             { id: 'd100', category: 'diamond', name: '100+10 Diamantes', price: 38, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/tdox1df38bo3tgsocxu6q/image_1772916122952.png?rlkey=b9mwpym9h1faemlm8bxewklfp&st=st1txhf0&raw=1' },
             { id: 'd310', category: 'diamond', name: '310+31 Diamantes', price: 115, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/ecgi09ijx7zs3elxwi7y4/image_1772916122952-1.png?rlkey=v297zoyo1vr7jf04sj14hhwlh&st=xuyea2vd&raw=1' },
             { id: 'd520', category: 'diamond', name: '520+52 Diamantes', price: 175, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/nn9apv1k8yor5qz5po8s5/image_1772916122952-2.png?rlkey=7fjv3bhqibn2btdeqdw4113i4&st=mtoze6sz&raw=1' },
             { id: 'd1060', category: 'diamond', name: '1,060+106 Diamantes', price: 335, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/mkls8ndz8ffgkzjvx64j8/image_1772916122952-4.png?rlkey=zozedza69urinjjkuqk16zr8f&st=lu5mi1v7&raw=1' },
             { id: 'd2180', category: 'diamond', name: '2,180+218 Diamantes', price: 635, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/fvrtjxgwuvn3bv4xveclh/image_1772916122952-5.png?rlkey=455pcid1x6urd4czv5c9d75jf&st=gu07m28u&raw=1' },
-            { id: 'd5600', category: 'diamond', name: '5,600+560 Diamantes', price: 1650, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/k44770iehaqw23f59z4a0/image_1772916122952-6.png?rlkey=gba9m1ttqvkcviuc63dked3ot&st=h4p9kui3&raw=1' },
-            
-            // Membresías
+            { id: 'd5600', category: 'diamond', name: '5,600+560 Diamantes', price: 1,650, color: '#3b82f6', image: 'https://www.dropbox.com/scl/fi/k44770iehaqw23f59z4a0/image_1772916122952-6.png?rlkey=gba9m1ttqvkcviuc63dked3ot&st=h4p9kui3&raw=1' },
             { id: 'msb', category: 'card', name: 'Semanal Básica', price: 25, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/ahq38o0mw6s2qqcvb6kti/image_1772916122952-8.png?rlkey=6267ei3elqqf47gt8vdjc6akb&st=tahnif9f&raw=1' },
             { id: 'ms', category: 'card', name: 'Membresía Semanal', price: 75, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/x4ri4lon1sruytfu68ppt/image_1772916122952-9.png?rlkey=4ot5vjkekuy6v0tjs8bybl899&st=4qfj9vye&raw=1' },
             { id: 'mm', category: 'card', name: 'Membresía Mensual', price: 365, color: '#a855f7', image: 'https://www.dropbox.com/scl/fi/ryb89djsol1a2vly7lxur/image_1772916122952-10.png?rlkey=6rbdtojsazf6d17qelpsrb234&st=pjigbc4v&raw=1' },
-            
-            // Pase
             { id: 'pb', category: 'pass', name: 'Pase Booyahh', price: 120, color: '#f43f5e', image: 'https://www.dropbox.com/scl/fi/jkburejmve5ftohs9vupu/image_1772916122952-7.png?rlkey=bc7uvkx839min1rbik2e3xm06&st=wlaq1zof&raw=1' }
         ];
 
+        // --- SISTEMA DE MÉTODOS DE PAGO ---
+        const paymentMethodsData = [
+            { 
+                id: 'bac', name: 'BAC', color: 'bg-red-600', textCol: 'text-white',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M7 15h.01"/></svg>`,
+                text: '🏦 BANCO BAC CREDOMATIC\nN° Cuenta (C$): 373461441\nIBAN: NI10BAMC00000000000373461441\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ\nTipo: Cuentas de Ahorro Cordobas'
+            },
+            { 
+                id: 'banpro', name: 'Banpro', color: 'bg-green-600', textCol: 'text-white',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+                text: '🏦 BANCO PROMERICA (BANPRO)\nN° Cuenta (C$): 10021500519545\nIBAN: NI75BAPR00000010021500519545\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ\nTipo: Cuentas de Ahorro Cordobas'
+            },
+            { 
+                id: 'billetera', name: 'Billetera', color: 'bg-emerald-500', textCol: 'text-white',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>`,
+                text: '📱 BILLETERA MÓVIL BANPRO\nNúmero: 58276230\nTitular: Anthony Enrique Fonseca Jiménez'
+            },
+            { 
+                id: 'binance', name: 'Binance', color: 'bg-yellow-500', textCol: 'text-black',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.3L5.4 7.9l2.2 2.2L12 5.7l4.4 4.4 2.2-2.2L12 1.3zm0 5.7L8.7 10.3l2.2 2.2 1.1-1.1 1.1 1.1 2.2-2.2L12 7zM4.3 9l-2.2 2.2 2.2 2.2 2.2-2.2L4.3 9zm15.4 0l-2.2 2.2 2.2 2.2 2.2-2.2L19.7 9zM12 11.4L6.5 16.9l2.2 2.2L12 15.8l3.3 3.3 2.2-2.2L12 11.4z"/></svg>`,
+                text: '🔶 BINANCE PAY\nPay ID: 881558745\n\n⚠️ El total se convertirá a USDT (Tasa: C$ 38).'
+            },
+            { 
+                id: 'paypal', name: 'PayPal', color: 'bg-blue-600', textCol: 'text-white',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106z"/></svg>`,
+                text: '🅿️ PAYPAL\nCorreo: anthonyfonjim@gmail.com\n\n⚠️ Enviaremos la comisión sumada al total en USD.'
+            },
+            { 
+                id: 'remitly', name: 'Remitly', color: 'bg-blue-400', textCol: 'text-white',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
+                text: '💸 REMITLY (REMESAS)\nNombres: ANTHONY ENRIQUE\nApellidos: FONSECA JIMENEZ\nCédula: 401-281003-1001W\nCiudad: Masaya\nPaís: Nicaragua'
+            },
+            { 
+                id: 'wu', name: 'W. Union', color: 'bg-yellow-400', textCol: 'text-black',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 12h19M12 2.5v19M6.5 6.5l11 11M6.5 17.5l11-11"/></svg>`,
+                text: '⚡ WESTERN UNION\nNombres: ANTHONY ENRIQUE\nApellidos: FONSECA JIMENEZ\nCédula: 401-281003-1001W\nCiudad: Masaya\nPaís: Nicaragua'
+            },
+            { 
+                id: 'kash', name: 'Kash', color: 'bg-violet-500', textCol: 'text-white',
+                svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`,
+                text: '💸 APP KASH\nAceptamos transferencias rápidas por Kash.\nEscríbenos al WhatsApp al enviar tu pedido para proporcionarte el Cashtag o número exacto.'
+            }
+        ];
+
+        let selectedPaymentMethod = null;
         let currentSelection = {}; 
         let globalOrders = []; 
         let activeTab = 'diamond';
@@ -556,9 +624,70 @@
                 weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' 
             });
             renderProducts();
+            renderPaymentMethods();
             createEmbers();
         }
 
+        // --- RENDERIZADO DE MÉTODOS DE PAGO ---
+        function renderPaymentMethods() {
+            const grid = document.getElementById('payment-methods-grid');
+            grid.innerHTML = paymentMethodsData.map(m => `
+                <button onclick="selectPaymentMethod('${m.id}')" id="btn-pay-${m.id}" class="flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-700 bg-black/40 hover:bg-slate-800 transition-all text-slate-300 hover:text-white group">
+                    <span class="w-8 h-8 rounded-full ${m.color} ${m.textCol} flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">
+                        ${m.svg}
+                    </span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-center leading-tight truncate w-full">${m.name}</span>
+                </button>
+            `).join('');
+        }
+
+        function selectPaymentMethod(id) {
+            selectedPaymentMethod = id;
+            
+            // Animación Visual Botones
+            paymentMethodsData.forEach(m => {
+                const btn = document.getElementById(`btn-pay-${m.id}`);
+                if (m.id === id) {
+                    btn.classList.remove('border-slate-700', 'bg-black/40', 'text-slate-300');
+                    btn.classList.add('border-blue-500', 'bg-blue-900/40', 'text-white', 'ring-1', 'ring-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]');
+                } else {
+                    btn.classList.add('border-slate-700', 'bg-black/40', 'text-slate-300');
+                    btn.classList.remove('border-blue-500', 'bg-blue-900/40', 'text-white', 'ring-1', 'ring-blue-500', 'shadow-[0_0_15px_rgba(59,130,246,0.3)]');
+                }
+            });
+
+            // Mostrar Información Bancaria
+            const infoBox = document.getElementById('payment-details-box');
+            const infoText = document.getElementById('payment-details-text');
+            const data = paymentMethodsData.find(m => m.id === id);
+            
+            infoText.innerText = data.text;
+            infoBox.classList.remove('hidden');
+
+            // Actualizar Display Totales (Para recalcular comisiones PayPal)
+            updateTotalsDisplay();
+        }
+
+        function copyPaymentInfo() {
+            const text = document.getElementById('payment-details-text').innerText;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => showToast("✅ Datos copiados al portapapeles", false));
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast("✅ Datos copiados al portapapeles", false);
+                } catch (err) {
+                    showToast("❌ Error al copiar datos", true);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // --- SISTEMA DE PESTAÑAS Y PRODUCTOS ---
         function switchTab(tabId) {
             activeTab = tabId;
             document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
@@ -577,22 +706,16 @@
                 
                 grid.innerHTML += `
                     <div class="gamer-card p-5 flex flex-col justify-between animate-slide-up" style="--theme-color: ${p.color}">
-                        
-                        <!-- Contenedor con Lupa para Visualizador -->
                         <div class="product-image-container cursor-pointer group" onclick="openModal('${p.image}')">
                             <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/100?text=FF'">
                             <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 backdrop-blur-sm">
                                 <svg width="36" height="36" fill="none" stroke="white" stroke-width="2" class="transform scale-50 group-hover:scale-100 transition-transform duration-300"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
                             </div>
                         </div>
-                        
-                        <!-- Título y Precio Centrados con Efectos -->
                         <div class="mb-5 text-center px-2">
                             <h4 class="font-black text-slate-100 text-lg sm:text-xl mb-1 uppercase tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">${p.name}</h4>
                             <p class="text-3xl font-black price-glitz" style="--theme-color: ${p.color}">C$ ${p.price}</p>
                         </div>
-
-                        <!-- Selector de Cantidad -->
                         <div class="flex items-center justify-between bg-black/60 rounded-xl border border-white/10 p-1">
                             <button onclick="updateQtyBtn('${p.id}', -1)" class="w-12 h-10 flex items-center justify-center bg-slate-800 text-white rounded-lg hover:bg-blue-600 transition-colors font-bold text-xl">-</button>
                             <input type="number" id="qty-${p.id}" value="${currentSelection[p.id]}" min="0" oninput="setQtyDirect('${p.id}', this.value)" class="w-12 bg-transparent text-center text-white font-bold text-xl border-none focus:outline-none">
@@ -632,43 +755,33 @@
 
             globalOrders.push({ idVal, nameVal, items, total: items.reduce((a, b) => a + b.lineTotal, 0) });
             
-            // Sonido Gamer
             document.getElementById('fx-add').currentTime = 0;
             document.getElementById('fx-add').play();
             
-            // Reset
             document.getElementById('player-id').value = '';
             document.getElementById('player-name').value = '';
             products.forEach(p => currentSelection[p.id] = 0);
             renderProducts();
             calculateSubtotal();
             
-            showToast("✅ Cuenta añadida al carrito exitosamente", false);
+            showToast("✅ Cuenta añadida al carrito", false);
             renderCart();
         }
 
-        // --- SISTEMA DE CÁLCULO DE DESCUENTOS ---
+        // --- SISTEMA DE CÁLCULOS PRINCIPAL ---
         function calculateCartTotals() {
             let subtotal = 0;
             let totalPackages = 0;
             
             globalOrders.forEach(o => {
                 subtotal += o.total;
-                o.items.forEach(it => {
-                    totalPackages += it.qty;
-                });
+                o.items.forEach(it => totalPackages += it.qty);
             });
 
             let discountPercent = 0;
-            
-            // Nueva regla: Basada exclusivamente en la cantidad de paquetes
-            if (totalPackages >= 75) {
-                discountPercent = 0.01; // 1%
-            } else if (totalPackages >= 50) {
-                discountPercent = 0.005; // 0.5%
-            } else if (totalPackages >= 25) {
-                discountPercent = 0.0025; // 0.25%
-            }
+            if (totalPackages >= 75) discountPercent = 0.01; 
+            else if (totalPackages >= 50) discountPercent = 0.005;
+            else if (totalPackages >= 25) discountPercent = 0.0025;
 
             let discountAmount = Math.round(subtotal * discountPercent);
             let finalTotal = subtotal - discountAmount;
@@ -678,24 +791,17 @@
 
         function removeOrder(index) { globalOrders.splice(index, 1); renderCart(); }
 
-        // --- SISTEMA DE EDICIÓN EN MODAL (NUEVO) ---
+        // --- EDICIÓN EN MODAL ---
         function editOrder(index) {
             editingIndex = index;
             const o = globalOrders[index];
-            
             document.getElementById('edit-id').value = o.idVal;
             document.getElementById('edit-name').value = o.nameVal;
-            
-            // Iniciar selección temporal en 0 para todos los productos
             products.forEach(p => tempEditSelection[p.id] = 0);
-            
-            // Cargar los productos que ya tenía en el carrito
             o.items.forEach(it => tempEditSelection[it.product.id] = it.qty);
-            
             renderEditProducts();
             calculateEditTotal();
             
-            // Mostrar Modal con animación
             const modal = document.getElementById('edit-modal');
             const content = document.getElementById('edit-modal-content');
             modal.classList.remove('hidden');
@@ -708,16 +814,12 @@
         }
 
         function closeEditModal(e) {
-            // Evita cerrar si se clickea dentro del panel
             if (e && e.target.id === 'edit-modal-content') return;
-            
             const modal = document.getElementById('edit-modal');
             const content = document.getElementById('edit-modal-content');
-            
             modal.classList.add('opacity-0');
             content.classList.remove('scale-100');
             content.classList.add('scale-95');
-            
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
@@ -728,8 +830,6 @@
         function renderEditProducts() {
             const list = document.getElementById('edit-products-list');
             list.innerHTML = '';
-            
-            // Renderizamos todos los productos por si quiere agregar uno distinto al pedido actual
             products.forEach(p => {
                 const qty = tempEditSelection[p.id] || 0;
                 list.innerHTML += `
@@ -761,8 +861,6 @@
         function setEditQtyDirect(id, value) {
             let num = Math.min(Math.max(parseInt(value) || 0, 0), 99);
             tempEditSelection[id] = num;
-            
-            // Actualizar clases visuales sin re-renderizar todo para no perder el foco del teclado
             const container = document.getElementById(`edit-item-container-${id}`);
             if (container) {
                 if (num > 0) {
@@ -791,27 +889,24 @@
         function saveEditOrder() {
             const idVal = document.getElementById('edit-id').value;
             const nameVal = document.getElementById('edit-name').value;
-            
-            if (!idVal || !nameVal) return showToast("Faltan datos de jugador (ID y Nick)", true);
+            if (!idVal || !nameVal) return showToast("Faltan datos de jugador", true);
 
             let newItems = products.filter(p => tempEditSelection[p.id] > 0).map(p => ({
                 product: p, qty: tempEditSelection[p.id], lineTotal: p.price * tempEditSelection[p.id]
             }));
 
-            if (!newItems.length) {
-                return showToast("Debes tener al menos un paquete para esta cuenta.", true);
-            }
+            if (!newItems.length) return showToast("Añade al menos un paquete", true);
 
-            // Sobreescribir la cuenta editada
             globalOrders[editingIndex] = {
                 idVal, nameVal, items: newItems, total: newItems.reduce((a, b) => a + b.lineTotal, 0)
             };
             
             renderCart();
             closeEditModal();
-            showToast("✅ Pedido modificado con éxito", false);
+            showToast("✅ Pedido modificado", false);
         }
 
+        // --- MANEJO DEL CARRITO Y TOTALES FINALES ---
         function renderCart() {
             const listEl = document.getElementById('order-list');
             listEl.innerHTML = globalOrders.length ? '' : '<div class="text-center opacity-30 py-10"><p>No hay cuentas añadidas aún</p></div>';
@@ -836,12 +931,16 @@
                     </div>`;
             });
 
+            updateTotalsDisplay();
+        }
+
+        function updateTotalsDisplay() {
             const totals = calculateCartTotals();
             
-            // Actualizar Subtotal
+            // Subtotal Base
             document.getElementById('cart-subtotal').innerText = totals.subtotal.toLocaleString();
             
-            // Actualizar Descuento en la UI
+            // Descuentos
             const discountContainer = document.getElementById('discount-container');
             if (totals.discountAmount > 0) {
                 discountContainer.classList.remove('hidden');
@@ -853,37 +952,84 @@
                 discountContainer.classList.remove('flex');
             }
 
-            // Actualizar Total Final
-            document.getElementById('global-total').innerText = totals.finalTotal.toLocaleString();
+            // Lógica Exclusiva para PayPal y Binance (Calculo de USD/USDT)
+            const paypalContainer = document.getElementById('paypal-fee-container');
+            const globalTotalDisplay = document.getElementById('global-total-display');
+            const usdContainer = document.getElementById('usd-total-container');
+
+            if (selectedPaymentMethod === 'paypal' && totals.finalTotal > 0) {
+                // Conversión y comisión requerida por PayPal
+                let totalUsdBase = totals.finalTotal / 37;
+                let paypalFee = (totalUsdBase * 0.054) + 0.35;
+                let totalPaypalUsd = totalUsdBase + paypalFee;
+
+                paypalContainer.classList.remove('hidden');
+                paypalContainer.classList.add('flex');
+                document.getElementById('paypal-fee-amount').innerText = paypalFee.toFixed(2);
+
+                usdContainer.classList.remove('hidden');
+                document.getElementById('usd-equivalent-cordobas').innerText = totals.finalTotal.toLocaleString();
+
+                globalTotalDisplay.innerHTML = `<span class="text-green-400 text-xl">$</span> <span class="text-green-400">${totalPaypalUsd.toFixed(2)}</span> <span class="text-sm font-bold text-slate-400">USD</span>`;
+            } else if (selectedPaymentMethod === 'binance' && totals.finalTotal > 0) {
+                // Conversión requerida por Binance (Tasa 38)
+                let totalBinanceUsd = totals.finalTotal / 38;
+
+                paypalContainer.classList.add('hidden');
+                paypalContainer.classList.remove('flex');
+
+                usdContainer.classList.remove('hidden');
+                document.getElementById('usd-equivalent-cordobas').innerText = totals.finalTotal.toLocaleString();
+
+                globalTotalDisplay.innerHTML = `<span class="text-yellow-400 text-xl">$</span> <span class="text-yellow-400">${totalBinanceUsd.toFixed(2)}</span> <span class="text-sm font-bold text-slate-400">USDT</span>`;
+            } else {
+                paypalContainer.classList.add('hidden');
+                paypalContainer.classList.remove('flex');
+                usdContainer.classList.add('hidden');
+                
+                globalTotalDisplay.innerHTML = `C$ <span class="text-blue-400">${totals.finalTotal.toLocaleString()}</span>`;
+            }
+
             updateCheckoutButton(totals.finalTotal);
         }
 
         function updateCheckoutButton(total) {
             const btn = document.getElementById('btn-checkout');
             if (total > 0) {
-                btn.className = "btn-shine btn-checkout-active w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-black text-lg py-5 rounded-2xl transition-all flex items-center justify-center gap-3 cursor-pointer relative z-10";
-                btn.innerHTML = `<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> PROCESAR PEDIDO`;
-                btn.disabled = false;
+                if (!selectedPaymentMethod) {
+                    btn.className = "w-full bg-blue-900/40 text-blue-300 font-black text-lg py-5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-blue-500/50 hover:bg-blue-800/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]";
+                    btn.innerHTML = `<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ELIGE MÉTODO DE PAGO ↑`;
+                } else {
+                    btn.className = "btn-shine btn-checkout-active w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-black text-lg py-5 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-lg relative z-10";
+                    btn.innerHTML = `<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> PROCESAR PEDIDO`;
+                }
             } else {
                 btn.className = "w-full bg-slate-800 text-slate-500 font-black text-lg py-5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-slate-700 cursor-not-allowed";
                 btn.innerHTML = `<svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg> PROCESAR PEDIDO`;
-                btn.disabled = true;
             }
         }
 
         function enviarPedidoFinal() {
             if (!globalOrders.length) return;
+            if (!selectedPaymentMethod) {
+                // Animar el grid si intentan pagar sin método
+                const grid = document.getElementById('payment-methods-grid');
+                grid.classList.add('animate-[pulse_0.5s_ease-in-out_2]');
+                setTimeout(() => grid.classList.remove('animate-[pulse_0.5s_ease-in-out_2]'), 1000);
+                return showToast("⚠️ Por favor selecciona un Método de Pago primero.", true);
+            }
             
             const btn = document.getElementById('btn-checkout');
             const originalHTML = btn.innerHTML;
-            const totals = calculateCartTotals(); // Recalcular antes de enviar por seguridad
+            const totals = calculateCartTotals(); 
             
-            // Animación de Carga Interactiva
+            // Animación de Carga
             btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> PREPARANDO WHATSAPP...`;
             btn.classList.add('scale-[0.98]', 'opacity-90');
             
             setTimeout(() => {
                 let msg = `*ASTRAL NEXUS MULTISERVICIOS* 🚀\n━━━━━━━━━━━━━━━━━━━\n\n`;
+                
                 globalOrders.forEach((o, i) => {
                     msg += `👤 *CUENTA ${i + 1}*\n▪ ID: \`${o.idVal}\`\n▪ Nick: ${o.nameVal}\n`;
                     o.items.forEach(it => msg += `  - ${it.qty}x ${it.product.name}\n`);
@@ -892,17 +1038,37 @@
                 
                 msg += `━━━━━━━━━━━━━━━━━━━\n`;
                 
-                // Aplicar el bloque de descuento al texto de WhatsApp si existe
+                const pmData = paymentMethodsData.find(m => m.id === selectedPaymentMethod);
+                msg += `🏦 *MÉTODO DE PAGO:* ${pmData.name}\n`;
+                
                 if (totals.discountAmount > 0) {
                     msg += `📊 *Subtotal:* C$ ${totals.subtotal.toLocaleString()}\n`;
                     msg += `🎁 *Descuento Aplicado (${totals.discountPercent * 100}%):* -C$ ${totals.discountAmount.toLocaleString()}\n`;
                 }
                 
-                msg += `💰 *TOTAL A PAGAR: C$ ${totals.finalTotal.toLocaleString()}*\n\n_⚠️ El total y paquetes no deben ser modificados._`;
+                // Variación de Formato de Salida si es PayPal o Binance
+                if (selectedPaymentMethod === 'paypal') {
+                    let totalUsdBase = totals.finalTotal / 37;
+                    let paypalFee = (totalUsdBase * 0.054) + 0.35;
+                    let totalPaypalUsd = totalUsdBase + paypalFee;
+                    
+                    msg += `\n💵 *Total (C$):* C$ ${totals.finalTotal.toLocaleString()}`;
+                    msg += `\n💳 *TOTAL PAYPAL A ENVIAR:* $${totalPaypalUsd.toFixed(2)} USD\n`;
+                    msg += `_(Incluye tasa de cambio y comisión 5.4% + $0.35)_`;
+                } else if (selectedPaymentMethod === 'binance') {
+                    let totalBinanceUsd = totals.finalTotal / 38;
+                    
+                    msg += `\n💵 *Total (C$):* C$ ${totals.finalTotal.toLocaleString()}`;
+                    msg += `\n🔶 *TOTAL BINANCE A ENVIAR:* $${totalBinanceUsd.toFixed(2)} USDT\n`;
+                    msg += `_(Tasa de cambio calculada a C$ 38)_`;
+                } else {
+                    msg += `\n💰 *TOTAL A PAGAR: C$ ${totals.finalTotal.toLocaleString()}*\n`;
+                }
+                
+                msg += `\n\n_⚠️ El total y paquetes no deben ser modificados._`;
                 
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
                 
-                // Restaurar botón después de enviar
                 setTimeout(() => {
                     btn.innerHTML = originalHTML;
                     btn.classList.remove('scale-[0.98]', 'opacity-90');
@@ -913,7 +1079,7 @@
 
         function showToast(m, err) {
             const t = document.createElement('div');
-            t.className = `${err ? 'bg-red-600' : 'bg-blue-700'} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-slide-up text-center text-sm`;
+            t.className = `${err ? 'bg-red-600' : 'bg-blue-700'} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-slide-up text-center text-sm border border-white/20 z-[999]`;
             t.innerText = m;
             document.getElementById('toast-container').appendChild(t);
             setTimeout(() => t.remove(), 4000);
@@ -938,4 +1104,3 @@
     </script>
 </body>
 </html>
-
