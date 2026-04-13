@@ -47,25 +47,35 @@
         }
 
         .title-nexus { font-family: 'Black Ops One', cursive; }
-        .text-glitch { position: relative; display: inline-block; }
-        .text-glitch::before, .text-glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.8;
-        }
-        .text-glitch::before { left: 2px; text-shadow: -2px 0 #ff00c8; animation: glitch-anim 2s infinite linear alternate-reverse; }
-        .text-glitch::after { left: -2px; text-shadow: -2px 0 #00fff9; animation: glitch-anim 3s infinite linear alternate-reverse; }
         
-        @keyframes glitch-anim {
-            0% { clip-path: inset(20% 0 80% 0); }
-            20% { clip-path: inset(60% 0 10% 0); }
-            100% { clip-path: inset(30% 0 40% 0); }
+        /* Efecto Gaming MULTISERVICIOS */
+        .gaming-text {
+            background: linear-gradient(90deg, #ff00c8, #3b82f6, #a855f7, #ff00c8);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: move-gradient 4s linear infinite, glow-text 2s ease-in-out infinite alternate;
         }
 
-        input[type="number"]::-webkit-inner-spin-button, 
-        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        @keyframes move-gradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
 
+        @keyframes glow-text {
+            from { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5)); }
+            to { filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8)); }
+        }
+
+        /* Animación Parpadeante Crítica */
+        @keyframes blink-red {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 15px #ef4444); color: #fecaca; }
+            50% { opacity: 0.4; filter: none; color: #ef4444; }
+        }
+        .animate-blink-warning { animation: blink-red 1.2s infinite ease-in-out; }
+
+        /* --- Gamer Card --- */
         .gamer-card {
             background: linear-gradient(145deg, rgba(15,15,25,0.9) 0%, rgba(5,5,10,0.95) 100%);
             position: relative;
@@ -73,6 +83,8 @@
             z-index: 1;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 320px;
+            width: 100%;
         }
         .gamer-card::before {
             content: '';
@@ -110,12 +122,23 @@
             background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%);
             border-radius: 16px; margin-bottom: 15px; position: relative; overflow: hidden;
         }
-        .product-image-container img { max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); transition: transform 0.4s ease; }
+        .product-image-container img { max-width: 85%; max-height: 85%; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); transition: transform 0.4s ease; }
 
         .glass-panel { background: rgba(10, 10, 20, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
 
-        .game-selector-btn { transition: all 0.3s; opacity: 0.5; border: 1px solid transparent; }
-        .game-selector-btn.active { opacity: 1; border-color: var(--theme-color); background: rgba(255,255,255,0.05); transform: scale(1.05); }
+        /* Selector de Juegos Mas Grande */
+        .game-selector-btn { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            opacity: 0.5; 
+            border: 2px solid transparent; 
+        }
+        .game-selector-btn.active { 
+            opacity: 1; 
+            border-color: var(--theme-color); 
+            background: rgba(255,255,255,0.05); 
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 30px -5px var(--theme-color);
+        }
 
         .category-tab { transition: all 0.3s; }
         .category-tab.active { background: var(--theme-color); color: white; box-shadow: 0 5px 15px var(--theme-color); transform: translateY(-2px); }
@@ -125,6 +148,14 @@
         
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+
+        .btn-shine { position: relative; overflow: hidden; }
+        .btn-shine::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-20deg); animation: shine 3s infinite;
+        }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
     </style>
 </head>
 <body class="min-h-screen pb-10">
@@ -139,8 +170,23 @@
         <img id="modal-img" src="" class="max-w-[95vw] max-h-[85vh] object-contain drop-shadow-2xl transform scale-90 transition-all duration-300">
     </div>
 
+    <!-- Modal Edición -->
+    <div id="edit-modal" class="fixed inset-0 z-[160] hidden items-center justify-center bg-black/90 backdrop-blur-sm transition-opacity opacity-0" onclick="closeEditModal(event)">
+        <div id="edit-modal-content" class="glass-panel w-11/12 max-w-lg max-h-[85vh] rounded-3xl border border-blue-500/30 flex flex-col overflow-hidden" onclick="event.stopPropagation()">
+            <div class="p-5 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-blue-900/20 to-black">
+                <h3 class="text-lg font-bold text-white uppercase tracking-widest">Editar Selección</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-400"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+            <div id="edit-products-list" class="p-5 overflow-y-auto space-y-3 flex-grow bg-black/40"></div>
+            <div class="p-5 border-t border-white/10 flex justify-between items-center">
+                <div><p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Subtotal</p><p class="text-xl font-black text-blue-400">C$ <span id="edit-total">0</span></p></div>
+                <button onclick="saveEditOrder()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-xl font-bold uppercase text-xs">Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
-    <header class="relative pt-8 pb-6 px-4 text-center glass-panel border-b border-blue-600/30 sticky top-0 z-50">
+    <header class="relative pt-8 pb-6 px-4 text-center glass-panel border-b border-blue-600/30 sticky top-0 z-50 shadow-2xl">
         <div class="absolute top-4 right-4 flex items-center gap-3">
             <div id="music-bars" class="hidden flex items-end h-5"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
             <button onclick="toggleMusic()" class="bg-black/60 border border-blue-500/50 p-2 rounded-full hover:bg-blue-600 text-white transition-all shadow-lg">
@@ -151,137 +197,167 @@
 
         <div class="flex flex-col items-center justify-center gap-1">
             <h1 class="title-nexus text-4xl sm:text-6xl text-white drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]">ASTRAL NEXUS</h1>
-            <h2 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400 tracking-[0.3em] uppercase text-glitch" data-text="MULTISERVICIOS">MULTISERVICIOS</h2>
+            <h2 class="text-xl sm:text-2xl font-black tracking-[0.3em] uppercase gaming-text text-glitch" data-text="MULTISERVICIOS">MULTISERVICIOS</h2>
         </div>
         
         <div class="flex items-center justify-center gap-4 mt-4">
-            <span class="bg-blue-900/40 px-4 py-1 rounded-full border border-blue-500/30 text-[10px] font-bold text-blue-200 uppercase tracking-widest shadow-inner">SISTEMA MULTI-JUEGOS</span>
-            <span id="current-date" class="text-violet-400 text-[10px] font-bold uppercase tracking-widest"></span>
+            <span id="current-date" class="text-violet-400 text-[10px] font-bold uppercase tracking-widest bg-black/40 px-4 py-1 rounded-full border border-violet-500/20"></span>
         </div>
     </header>
 
-    <!-- INSTRUCCIONES Y PORTAL -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="glass-panel p-6 rounded-3xl border border-blue-500/30 relative overflow-hidden flex flex-col justify-center">
-                <h3 class="text-xl font-black text-blue-400 mb-4 uppercase tracking-widest flex items-center gap-3">
+    <!-- INSTRUCCIONES Y PORTAL (CENTRADOS) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 space-y-8">
+        <div class="flex flex-col lg:flex-row justify-center items-center lg:items-stretch gap-6">
+            <!-- Guía -->
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-blue-500/30 relative overflow-hidden flex flex-col justify-center w-full max-w-2xl shadow-xl">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full"></div>
+                <h3 class="text-xl font-black text-blue-400 mb-5 uppercase tracking-[0.2em] flex items-center gap-3">
                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     ¿Cómo pedir recargas?
                 </h3>
-                <ul class="space-y-3 text-sm text-slate-300">
-                    <li class="flex items-start gap-3"><span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0">1</span> Selecciona el juego.</li>
-                    <li class="flex items-start gap-3"><span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0">2</span> Ingresa los datos solicitados (ID, Nick o Login).</li>
-                    <li class="flex items-start gap-3"><span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0">3</span> Agrega al carrito y procesa el pago.</li>
+                <ul class="space-y-4 text-sm text-slate-300">
+                    <li class="flex items-start gap-4">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 shadow-[0_0_10px_#3b82f6]">1</span> 
+                        <p>Selecciona el juego deseado en el catálogo de servicios.</p>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 shadow-[0_0_10px_#3b82f6]">2</span> 
+                        <p>Ingresa el <b>ID / Usuario</b> y el <b>Nick</b>. Añade los paquetes al carrito.</p>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 shadow-[0_0_10px_#3b82f6]">3</span> 
+                        <p>Elige tu método de pago y procesa el envío por WhatsApp.</p>
+                    </li>
                 </ul>
             </div>
 
-            <div class="glass-panel p-6 rounded-3xl border border-violet-500/40 bg-gradient-to-br from-violet-900/30 to-black relative overflow-hidden flex flex-col justify-center items-center text-center group cursor-pointer" onclick="window.open('https://astralnexusmultiservicios-dotcom.github.io/CANJE-DE-TARJETA-REGALOS-DE-PINES-FREE-FIRE/', '_blank')">
-                <div class="bg-violet-600/10 p-3 rounded-2xl mb-3 group-hover:scale-110 transition-transform">
-                    <svg width="40" height="40" fill="none" stroke="#a855f7" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M12 15h.01"/></svg>
+            <!-- Portal de Canje Centrado -->
+            <div class="glass-panel p-8 rounded-3xl border border-violet-500/40 bg-gradient-to-br from-violet-900/30 to-black flex flex-col justify-center items-center text-center group cursor-pointer w-full max-w-sm shadow-xl" onclick="window.open('https://astralnexusmultiservicios-dotcom.github.io/CANJE-DE-TARJETA-REGALOS-DE-PINES-FREE-FIRE/', '_blank')">
+                <div class="bg-violet-600/20 p-5 rounded-3xl mb-4 group-hover:scale-110 transition-all duration-500 shadow-[0_0_25px_rgba(168,85,247,0.3)]">
+                    <svg width="42" height="42" fill="none" stroke="#a855f7" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M12 15h.01"/></svg>
                 </div>
-                <h3 class="text-2xl font-black text-white uppercase tracking-widest mb-1 group-hover:text-violet-300">CANJEAR PINES FF</h3>
-                <p class="text-violet-200/60 text-xs">Portal automático para tarjetas de regalo Free Fire.</p>
+                <h3 class="text-2xl font-black text-white uppercase tracking-widest group-hover:text-violet-300 transition-colors">CANJEAR PINES</h3>
+                <p class="text-violet-200/50 text-[11px] uppercase tracking-[0.1em] mt-2 mb-6">Portal Automático Free Fire</p>
+                <div class="bg-violet-600 px-8 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-white shadow-lg group-hover:bg-violet-500 group-hover:shadow-violet-500/40 transition-all">Acceder Ahora</div>
             </div>
         </div>
+
+        <!-- Alerta de Seguridad Crítica Parpadeante -->
+        <div class="bg-red-900/30 border border-red-500/50 rounded-3xl p-5 flex flex-col sm:flex-row items-center gap-5 text-red-200 mx-auto max-w-4xl shadow-2xl relative overflow-hidden">
+            <div class="absolute inset-0 bg-red-600/5 animate-pulse"></div>
+            <div class="bg-red-600/20 p-3 rounded-2xl">
+                <svg width="32" height="32" fill="none" stroke="#ef4444" stroke-width="2.5" class="animate-bounce"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <p class="text-sm font-bold leading-relaxed text-center sm:text-left relative z-10">
+                <span class="uppercase tracking-[0.2em] text-red-400 block mb-1 animate-blink-warning font-black">⚠️ IMPORTANTE - VERIFICACIÓN ANTI-FRAUDE:</span>
+                Está estrictamente prohibido editar el mensaje generado para WhatsApp. Cada pago se cruza con nuestra base de datos en tiempo real. Cualquier intento de alteración causará la anulación inmediata del servicio.
+            </p>
+        </div>
     </div>
 
-    <!-- SELECTOR DE JUEGO -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <button onclick="selectGame('ff')" id="game-ff" class="game-selector-btn active glass-panel p-4 rounded-2xl flex flex-col items-center gap-2">
-                <img src="https://img.icons8.com/color/96/free-fire.png" class="w-10 h-10">
-                <span class="font-bold text-[10px] uppercase tracking-widest">Free Fire</span>
+    <!-- SELECTOR DE JUEGO (Iconos Mas Grandes) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-12">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <button onclick="selectGame('ff')" id="game-ff" class="game-selector-btn active glass-panel p-6 rounded-[32px] flex flex-col items-center gap-4 shadow-xl overflow-hidden">
+                <img src="https://play-lh.googleusercontent.com/Tzh1vMigK1Cn7_KIaMvKBVQRQapIMWMMqqyA6UqJTAYRpino4vvX6ZvYcVjZ_D8g19-DfHKCVeO2QPWl8vHGzw=s96-rw" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover shadow-2xl">
+                <span class="font-black text-xs uppercase tracking-[0.2em]">Free Fire</span>
             </button>
-            <button onclick="selectGame('roblox')" id="game-roblox" class="game-selector-btn glass-panel p-4 rounded-2xl flex flex-col items-center gap-2">
-                <img src="https://img.icons8.com/color/96/roblox.png" class="w-10 h-10">
-                <span class="font-bold text-[10px] uppercase tracking-widest">Roblox</span>
+            <button onclick="selectGame('roblox')" id="game-roblox" class="game-selector-btn glass-panel p-6 rounded-[32px] flex flex-col items-center gap-4 shadow-xl overflow-hidden">
+                <img src="https://img.icons8.com/color/96/roblox.png" class="w-20 h-20 md:w-24 md:h-24 object-cover shadow-2xl">
+                <span class="font-black text-xs uppercase tracking-[0.2em]">Roblox</span>
             </button>
-            <button onclick="selectGame('blood')" id="game-blood" class="game-selector-btn glass-panel p-4 rounded-2xl flex flex-col items-center gap-2">
-                <img src="https://cdn.moogold.com/2023/11/blood-strike.jpg" class="w-10 h-10 rounded-lg object-cover">
-                <span class="font-bold text-[10px] uppercase tracking-widest">Blood Strike</span>
+            <button onclick="selectGame('blood')" id="game-blood" class="game-selector-btn glass-panel p-6 rounded-[32px] flex flex-col items-center gap-4 shadow-xl overflow-hidden">
+                <img src="https://play-lh.googleusercontent.com/znCkgdQEOtWD2Y9to3MF5g9czaLvdzUhjn2UmPu1KEbedphqcHGf39Qe0sjwlP0JLvan0TFqyNaSO64rORSB=s96-rw" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover shadow-2xl">
+                <span class="font-black text-xs uppercase tracking-[0.2em]">Blood Strike</span>
             </button>
-            <button onclick="selectGame('tiktok')" id="game-tiktok" class="game-selector-btn glass-panel p-4 rounded-2xl flex flex-col items-center gap-2">
-                <img src="https://img.icons8.com/color/96/tiktok.png" class="w-10 h-10">
-                <span class="font-bold text-[10px] uppercase tracking-widest">TikTok</span>
+            <button onclick="selectGame('tiktok')" id="game-tiktok" class="game-selector-btn glass-panel p-6 rounded-[32px] flex flex-col items-center gap-4 shadow-xl overflow-hidden">
+                <img src="https://img.icons8.com/color/96/tiktok.png" class="w-20 h-20 md:w-24 md:h-24 object-cover shadow-2xl">
+                <span class="font-black text-xs uppercase tracking-[0.2em]">TikTok</span>
             </button>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         <!-- Formulario Izquierda -->
         <div class="lg:col-span-8 space-y-6">
-            <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800">
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl relative">
                 <h2 class="text-2xl font-bold mb-8 flex items-center gap-3 text-white uppercase tracking-tighter">
-                    <span id="theme-icon-bg" class="bg-blue-600 p-2 rounded-lg"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-1.29 1.94-3.5 3.22-6 3.22z"/></svg></span>
+                    <span id="theme-icon-bg" class="bg-blue-600 p-2 rounded-lg shadow-xl"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-1.29 1.94-3.5 3.22-6 3.22z"/></svg></span>
                     Identificación de la Cuenta
                 </h2>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
                     <div class="space-y-2">
                         <label id="label-id" class="text-blue-400 text-[10px] font-bold uppercase tracking-widest ml-1">ID / Usuario</label>
-                        <input type="text" id="player-id" placeholder="Ingresa el identificador" class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white text-xl focus:outline-none focus:border-blue-500 font-mono tracking-widest">
+                        <input type="text" id="player-id" placeholder="Ingresa el identificador" class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white text-xl focus:outline-none focus:border-blue-500 font-mono tracking-widest transition-all">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-violet-400 text-[10px] font-bold uppercase tracking-widest ml-1">Nick (Nickname)</label>
-                        <input type="text" id="player-name" placeholder="Ej: Astral_Master" class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white text-xl focus:outline-none focus:border-violet-500">
+                        <label class="text-violet-400 text-[10px] font-bold uppercase tracking-widest ml-1">Nick en Juego</label>
+                        <input type="text" id="player-name" placeholder="Ej: Astral_Master" class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white text-xl focus:outline-none focus:border-violet-500 transition-all">
                     </div>
-                    <!-- Campo especial para Passwords o Login Rápido -->
+                    <!-- Datos de Acceso (Solo Roblox y TikTok) -->
                     <div id="extra-data-container" class="hidden sm:col-span-2 space-y-2 animate-slide-up">
-                        <label id="label-extra" class="text-emerald-400 text-[10px] font-bold uppercase tracking-widest ml-1">Datos de Acceso (Pass o Código)</label>
-                        <textarea id="player-extra" rows="2" placeholder="Ingresa los datos solicitados aquí..." class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-emerald-500 text-sm"></textarea>
+                        <label id="label-extra" class="text-emerald-400 text-[10px] font-bold uppercase tracking-widest ml-1">Datos de Acceso</label>
+                        <textarea id="player-extra" rows="2" placeholder="Usuario y contraseña..." class="w-full bg-black/40 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-emerald-500 text-sm transition-all"></textarea>
                     </div>
                 </div>
 
                 <div id="category-tabs" class="flex flex-wrap gap-2 mb-8 bg-black/30 p-1.5 rounded-2xl border border-slate-800"></div>
-                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10"></div>
+                
+                <!-- PRODUCTOS GRILLA (CENTRADA) -->
+                <div id="products-grid" class="flex flex-wrap justify-center gap-6 mb-10"></div>
 
+                <!-- Subtotal Local -->
                 <div class="bg-gradient-to-br from-slate-900 to-black rounded-3xl p-6 border border-blue-900/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-inner relative overflow-hidden">
                     <div class="text-center sm:text-left relative z-10">
                         <p class="text-blue-300/60 text-xs font-bold uppercase tracking-widest mb-1">Subtotal de la Selección</p>
                         <p class="text-4xl font-black text-white">C$ <span id="current-selection-total">0</span></p>
                     </div>
                     <button onclick="addAccountToOrder()" class="btn-shine w-full sm:w-auto bg-gradient-to-r from-blue-600 to-violet-600 text-white font-black py-5 px-10 rounded-2xl shadow-lg transform active:scale-95 transition-all text-sm uppercase tracking-widest">
-                        Confirmar Cuenta
+                        Añadir Cuenta al Carrito
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Carrito y Pagos -->
+        <!-- Carrito Derecha -->
         <div class="lg:col-span-4 lg:sticky lg:top-36 space-y-4">
-            <div class="glass-panel rounded-3xl p-6 shadow-2xl border border-white/5 flex flex-col min-h-[500px]">
+            <div class="glass-panel rounded-3xl p-6 shadow-2xl border border-white/5 flex flex-col min-h-[550px]">
                 <h2 class="text-lg font-bold mb-6 flex items-center gap-3 text-white uppercase border-b border-white/5 pb-4 tracking-widest">
                     <svg width="24" height="24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-                    Carrito
+                    Tu Carrito
                 </h2>
 
-                <div id="order-list" class="flex-grow overflow-y-auto space-y-4 mb-4 max-h-[40vh] pr-2">
-                    <div class="text-center opacity-20 py-10 text-xs uppercase tracking-widest">Carrito Vacío</div>
+                <div id="order-list" class="flex-grow overflow-y-auto space-y-4 mb-4 max-h-[35vh] pr-2">
+                    <div class="text-center opacity-20 py-10 text-xs uppercase tracking-widest">Vacio</div>
                 </div>
 
                 <!-- Métodos Pago -->
                 <div class="mt-2 pt-4 border-t border-white/10">
-                    <span class="text-blue-400 font-bold uppercase text-[9px] tracking-[0.2em] mb-3 block text-center">Selecciona Método de Pago</span>
+                    <span class="text-blue-400 font-bold uppercase text-[9px] tracking-[0.2em] mb-3 block text-center">Método de Pago</span>
                     <div class="grid grid-cols-5 gap-2 mb-4" id="payment-methods-grid"></div>
 
                     <!-- Datos Bancarios con Copiado -->
-                    <div id="bank-info-box" class="hidden bg-black/60 border border-blue-500/30 rounded-xl p-4 relative group animate-slide-up">
-                        <button onclick="copyBankInfo()" class="absolute top-2 right-2 text-slate-400 hover:text-white bg-slate-800 p-1.5 rounded-lg transition-all" title="Copiar Datos">
+                    <div id="bank-info-box" class="hidden bg-black/60 border border-blue-500/30 rounded-xl p-4 relative animate-slide-up shadow-inner">
+                        <button onclick="copyBankInfo()" class="absolute top-2 right-2 text-slate-400 hover:text-white bg-slate-800 p-1.5 rounded-lg transition-all shadow-md">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                         </button>
-                        <p class="text-[10px] text-blue-400 font-bold uppercase mb-1" id="bank-title">Datos de Transferencia</p>
-                        <pre id="bank-details" class="text-[11px] text-slate-300 font-mono whitespace-pre-wrap leading-tight"></pre>
+                        <p class="text-[9px] text-blue-400 font-black uppercase mb-1" id="bank-title">Transferencia</p>
+                        <pre id="bank-details" class="text-[10px] text-slate-300 font-mono whitespace-pre-wrap leading-tight"></pre>
                     </div>
                 </div>
 
                 <div class="pt-4 border-t border-white/10">
-                    <div class="flex justify-between items-center mb-6 px-2">
-                        <span class="text-slate-400 font-bold uppercase text-xs tracking-widest">Total a Pagar</span>
-                        <span class="text-2xl font-black text-white">C$ <span id="global-total">0</span></span>
+                    <div class="flex flex-col mb-4 px-2">
+                        <div id="conversion-notice" class="hidden text-right text-[10px] text-amber-400 font-bold mb-1 uppercase tracking-tighter"></div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-bold uppercase text-xs tracking-widest">Total Final</span>
+                            <span class="text-2xl font-black text-white" id="display-total-final">C$ 0</span>
+                        </div>
                     </div>
                     <button onclick="enviarPedidoFinal()" id="btn-checkout" class="w-full bg-slate-800 text-slate-500 font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-slate-700 cursor-not-allowed uppercase text-sm tracking-widest">
-                        Procesar Pedido
+                        Enviar por WhatsApp
                     </button>
                 </div>
             </div>
@@ -294,7 +370,6 @@
     <script>
         const whatsappNumber = "50581244993";
 
-        // --- PRODUCTOS ---
         const products = [
             // FF
             { id: 'ff100', game: 'ff', category: 'diamond', name: '100+10 Diamantes', price: 36, image: 'https://www.dropbox.com/scl/fi/tdox1df38bo3tgsocxu6q/image_1772916122952.png?rlkey=b9mwpym9h1faemlm8bxewklfp&st=st1txhf0&raw=1' },
@@ -309,13 +384,10 @@
             { id: 'ffpb', game: 'ff', category: 'pass', name: 'Pase Booyahh', price: 120, image: 'https://www.dropbox.com/scl/fi/jkburejmve5ftohs9vupu/image_1772916122952-7.png?rlkey=bc7uvkx839min1rbik2e3xm06&st=wlaq1zof&raw=1' },
 
             // ROBLOX
-            { id: 'rbx80', game: 'roblox', category: 'direct', name: '80 Robux', price: 45, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx400', game: 'roblox', category: 'direct', name: '400 Robux', price: 190, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx800', game: 'roblox', category: 'direct', name: '800 Robux', price: 360, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx1700', game: 'roblox', category: 'direct', name: '1700 Robux', price: 720, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx4500', game: 'roblox', category: 'direct', name: '4500 Robux', price: 1750, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx10000', game: 'roblox', category: 'direct', name: '10000 Robux', price: 3800, image: 'https://img.icons8.com/color/96/roblox.png' },
-            // GIFT CARDS (3 TIPOS)
+            { id: 'rbx80', game: 'roblox', category: 'direct', name: '80 Robux (Directo)', price: 45, image: 'https://img.icons8.com/color/96/roblox.png' },
+            { id: 'rbx400', game: 'roblox', category: 'direct', name: '400 Robux (Directo)', price: 190, image: 'https://img.icons8.com/color/96/roblox.png' },
+            { id: 'rbx800', game: 'roblox', category: 'direct', name: '800 Robux (Directo)', price: 360, image: 'https://img.icons8.com/color/96/roblox.png' },
+            { id: 'rbx1700', game: 'roblox', category: 'direct', name: '1700 Robux (Directo)', price: 720, image: 'https://img.icons8.com/color/96/roblox.png' },
             { id: 'rbxg10', game: 'roblox', category: 'gift', name: 'Gift Card $10', price: 410, image: 'https://img.icons8.com/color/96/gift-card.png' },
             { id: 'rbxg25', game: 'roblox', category: 'gift', name: 'Gift Card $25', price: 1020, image: 'https://img.icons8.com/color/96/gift-card.png' },
             { id: 'rbxg50', game: 'roblox', category: 'gift', name: 'Gift Card $50', price: 2040, image: 'https://img.icons8.com/color/96/gift-card.png' },
@@ -334,17 +406,17 @@
 
         const gameConfigs = {
             ff: { color: '#3b82f6', label: 'ID Numérico FF', extra: false, tabs: { diamond: 'Diamantes', card: 'Membresías', pass: 'Pases' } },
-            roblox: { color: '#6366f1', label: 'Nombre Usuario / ID', extra: 'Usuario y Contraseña / Inicio Rápido', tabs: { direct: 'Recarga Directa', gift: 'Tarjetas Regalo' } },
+            roblox: { color: '#6366f1', label: 'ID / Nombre Usuario', extra: 'Usuario y Contraseña / Código Inicio Rápido', tabs: { direct: 'Recarga Directa', gift: 'Tarjetas Regalo' } },
             blood: { color: '#eab308', label: 'Strike ID', extra: false, tabs: { gold: 'Barras de Oro' } },
-            tiktok: { color: '#f43f5e', label: '@ID Usuario', extra: 'Datos Vinculados (Método + Pass)', tabs: { coins: 'Monedas TikTok' } }
+            tiktok: { color: '#f43f5e', label: '@ID Usuario TikTok', extra: 'Datos Vinculados (Método Login + Pass)', tabs: { coins: 'Monedas TikTok' } }
         };
 
         const paymentData = [
-            { id: 'bac', name: 'BAC', color: 'bg-red-600', text: '🏦 BANCO BAC CREDOMATIC\nN° Cuenta (C$): 373461441\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ\nTipo: Cuentas de Ahorro Cordobas' },
-            { id: 'banpro', name: 'Banpro', color: 'bg-green-600', text: '🏦 BANCO PROMERICA (BANPRO)\nN° Cuenta (C$): 10021500519545\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ\nTipo: Cuentas de Ahorro Cordobas' },
-            { id: 'billetera', name: 'Billetera', color: 'bg-emerald-500', text: '📱 BILLETERA MÓVIL BANPRO\nNúmero: 58276230\nTitular: Anthony Enrique Fonseca Jiménez' },
-            { id: 'binance', name: 'Binance', color: 'bg-yellow-500', text: '🔶 BINANCE PAY\nPay ID: 881558745\n(Se toma tasa a C$ 38)' },
-            { id: 'paypal', name: 'PayPal', color: 'bg-blue-600', text: '🅿️ PAYPAL\nCorreo: anthonyfonjim@gmail.com\n(Se cobra comisión 5.4% + $0.35)' }
+            { id: 'bac', name: 'BAC', color: 'bg-red-600', text: '🏦 BANCO BAC CREDOMATIC\nN° Cuenta (C$): 373461441\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ\nTipo: Ahorro' },
+            { id: 'banpro', name: 'Banpro', color: 'bg-green-600', text: '🏦 BANCO PROMERICA\nN° Cuenta (C$): 10021500519545\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ\nTipo: Ahorro' },
+            { id: 'billetera', name: 'Billetera', color: 'bg-emerald-500', text: '📱 BILLETERA BANPRO\nNúmero: 58276230\nTitular: Anthony Fonseca' },
+            { id: 'binance', name: 'Binance', color: 'bg-yellow-500', text: '🔶 BINANCE PAY\nID: 881558745\n(Tasa cambio: C$ 38 por USDT)' },
+            { id: 'paypal', name: 'PayPal', color: 'bg-blue-600', text: '🅿️ PAYPAL\nCorreo: anthonyfonjim@gmail.com\n(Comisión: 5.4% + $0.35 USD)' }
         ];
 
         let selectedGame = 'ff';
@@ -352,9 +424,12 @@
         let currentSelection = {};
         let globalOrders = [];
         let selectedPayment = null;
+        let editingIndex = -1;
+        let tempEditSelection = {};
 
         function initApp() {
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-NI', { weekday: 'long', day: 'numeric', month: 'long' });
+            // Fecha con Año
+            document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-NI', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
             renderPaymentMethods();
             selectGame('ff');
             createEmbers();
@@ -367,7 +442,6 @@
             document.getElementById('label-id').innerText = config.label;
             document.getElementById('theme-icon-bg').style.backgroundColor = config.color;
             
-            // Toggle Extra Data Field (Roblox / TikTok)
             const extraCont = document.getElementById('extra-data-container');
             if(config.extra) {
                 extraCont.classList.remove('hidden');
@@ -408,8 +482,8 @@
                         <div class="product-image-container cursor-pointer" onclick="openModal('${p.image}')">
                             <img src="${p.image}" alt="${p.name}">
                         </div>
-                        <div class="mb-4 text-center">
-                            <h4 class="font-bold text-white text-sm uppercase tracking-wider mb-1">${p.name}</h4>
+                        <div class="mb-4 text-center px-1">
+                            <h4 class="font-bold text-white text-sm uppercase tracking-wider mb-1 line-clamp-1">${p.name}</h4>
                             <p class="text-2xl font-black price-glitz" style="--theme-color: ${gameConfigs[selectedGame].color}">C$ ${p.price}</p>
                         </div>
                         <div class="flex items-center justify-between bg-black/60 rounded-xl border border-white/10 p-1">
@@ -459,7 +533,7 @@
 
             bankText.innerText = data.text;
             bankBox.classList.remove('hidden');
-            updateCheckoutBtn();
+            renderCart();
         }
 
         function copyBankInfo() {
@@ -476,11 +550,11 @@
             const extraVal = document.getElementById('player-extra').value;
             const config = gameConfigs[selectedGame];
 
-            if(!idVal || !nameVal) return showToast("⚠️ Faltan datos (ID y Nick)", true);
-            if(config.extra && !extraVal) return showToast("⚠️ Ingresa los datos de acceso", true);
+            if(!idVal || !nameVal) return showToast("⚠️ Ingresa ID y Nick", true);
+            if(config.extra && !extraVal) return showToast("⚠️ Ingresa los datos de acceso requeridos", true);
 
             const items = products.filter(p => currentSelection[p.id] > 0).map(p => ({
-                id: p.id, name: p.name, price: p.price, qty: currentSelection[p.id]
+                id: p.id, name: p.name, price: p.price, qty: currentSelection[p.id], game: p.game
             }));
 
             if(!items.length) return showToast("⚠️ Selecciona paquetes", true);
@@ -500,26 +574,108 @@
             showToast("✅ Cuenta añadida");
         }
 
+        // --- EDICIÓN ---
+        function editOrder(index) {
+            editingIndex = index;
+            const o = globalOrders[index];
+            tempEditSelection = {};
+            products.forEach(p => tempEditSelection[p.id] = 0);
+            o.items.forEach(it => tempEditSelection[it.id] = it.qty);
+            
+            renderEditProducts();
+            const modal = document.getElementById('edit-modal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function renderEditProducts() {
+            const list = document.getElementById('edit-products-list');
+            list.innerHTML = '';
+            const gameType = globalOrders[editingIndex].game.toLowerCase();
+            products.filter(p => p.game === gameType).forEach(p => {
+                const qty = tempEditSelection[p.id] || 0;
+                list.innerHTML += `
+                    <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
+                        <div class="text-xs">
+                            <p class="font-bold text-white">${p.name}</p>
+                            <p class="text-blue-400 font-bold">C$ ${p.price}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="updateEditQty('${p.id}', -1)" class="w-8 h-8 bg-slate-800 rounded font-bold">-</button>
+                            <span class="font-bold w-4 text-center">${qty}</span>
+                            <button onclick="updateEditQty('${p.id}', 1)" class="w-8 h-8 bg-slate-800 rounded font-bold">+</button>
+                        </div>
+                    </div>`;
+            });
+            calculateEditTotal();
+        }
+
+        function updateEditQty(id, delta) {
+            tempEditSelection[id] = Math.max(0, (tempEditSelection[id] || 0) + delta);
+            renderEditProducts();
+        }
+
+        function calculateEditTotal() {
+            let total = 0;
+            products.forEach(p => total += (tempEditSelection[p.id] || 0) * p.price);
+            document.getElementById('edit-total').innerText = total.toLocaleString();
+        }
+
+        function saveEditOrder() {
+            const newItems = products.filter(p => tempEditSelection[p.id] > 0).map(p => ({
+                id: p.id, name: p.name, price: p.price, qty: tempEditSelection[p.id], game: p.game
+            }));
+            if(!newItems.length) return showToast("Añade al menos un item", true);
+            globalOrders[editingIndex].items = newItems;
+            globalOrders[editingIndex].total = newItems.reduce((a,b) => a + (b.price * b.qty), 0);
+            closeEditModal(); renderCart();
+        }
+
+        function closeEditModal() {
+            const m = document.getElementById('edit-modal');
+            m.classList.add('opacity-0'); setTimeout(() => m.classList.add('hidden'), 300);
+        }
+
         function renderCart() {
             const list = document.getElementById('order-list');
-            list.innerHTML = globalOrders.length ? '' : '<div class="text-center opacity-20 py-10 text-xs uppercase tracking-widest">Sin cuentas</div>';
-            let total = 0;
+            list.innerHTML = globalOrders.length ? '' : '<div class="text-center opacity-20 py-10 text-xs uppercase tracking-widest">Vacio</div>';
+            let totalBase = 0;
             globalOrders.forEach((o, i) => {
-                total += o.total;
+                totalBase += o.total;
                 list.innerHTML += `
                     <div class="bg-blue-950/20 border border-white/5 rounded-2xl p-4 animate-slide-up relative">
-                        <button onclick="removeOrder(${i})" class="absolute top-2 right-2 text-slate-500 hover:text-red-500"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                        <div class="absolute top-2 right-2 flex gap-2">
+                            <button onclick="editOrder(${i})" class="text-slate-500 hover:text-blue-400 transition-colors"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                            <button onclick="removeOrder(${i})" class="text-slate-500 hover:text-red-500 transition-colors"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                        </div>
                         <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-1">${o.game}</p>
-                        <p class="font-bold text-white text-sm truncate pr-12">${o.nameVal}</p>
+                        <p class="font-bold text-white text-sm truncate pr-14">${o.nameVal}</p>
                         <p class="text-[10px] text-slate-500 font-mono">ID: ${o.idVal}</p>
-                        ${o.extraVal ? `<p class="text-[9px] text-emerald-400 mt-1 italic">Login: ${o.extraVal}</p>` : ''}
+                        ${o.extraVal ? `<p class="text-[9px] text-emerald-400 mt-1 italic leading-tight">Login: ${o.extraVal}</p>` : ''}
                         <div class="mt-2 space-y-1">
-                            ${o.items.map(it => `<div class="text-[10px] flex justify-between"><span>${it.qty}x ${it.name}</span><span>C$${it.price*it.qty}</span></div>`).join('')}
+                            ${o.items.map(it => `<div class="text-[10px] flex justify-between text-slate-300"><span>${it.qty}x ${it.name}</span><span>C$${it.price*it.qty}</span></div>`).join('')}
                         </div>
                         <p class="text-right font-black text-blue-400 mt-2">C$ ${o.total}</p>
                     </div>`;
             });
-            document.getElementById('global-total').innerText = total.toLocaleString();
+
+            let displayTotalStr = `C$ ${totalBase.toLocaleString()}`;
+            const notice = document.getElementById('conversion-notice');
+            notice.classList.add('hidden');
+
+            if(totalBase > 0 && selectedPayment === 'paypal') {
+                let totalPaypal = (totalBase / 37 * 1.054) + 0.35;
+                displayTotalStr = `$${totalPaypal.toFixed(2)} USD`;
+                notice.innerText = `Conversión C$37/USD + Comisión`;
+                notice.classList.remove('hidden');
+            } else if(totalBase > 0 && selectedPayment === 'binance') {
+                let totalBinance = totalBase / 38;
+                displayTotalStr = `${totalBinance.toFixed(2)} USDT`;
+                notice.innerText = `Tasa Binance: C$ 38 por USDT`;
+                notice.classList.remove('hidden');
+            }
+
+            document.getElementById('display-total-final').innerText = displayTotalStr;
             updateCheckoutBtn();
         }
 
@@ -529,22 +685,35 @@
             const btn = document.getElementById('btn-checkout');
             const ready = globalOrders.length > 0 && selectedPayment;
             btn.className = ready 
-                ? "btn-shine w-full bg-blue-600 text-white font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-lg uppercase text-sm tracking-widest cursor-pointer"
+                ? "btn-shine w-full bg-blue-600 text-white font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-lg uppercase text-sm tracking-widest cursor-pointer scale-100"
                 : "w-full bg-slate-800 text-slate-500 font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-slate-700 cursor-not-allowed uppercase text-sm tracking-widest";
         }
 
         function enviarPedidoFinal() {
             if(!globalOrders.length || !selectedPayment) return;
-            let total = 0;
+            let totalBase = 0;
             let msg = `*ASTRAL NEXUS MULTISERVICIOS* 🚀\n━━━━━━━━━━━━━━━━━━━\n\n`;
             globalOrders.forEach((o, i) => {
-                total += o.total;
+                totalBase += o.total;
                 msg += `👤 *PEDIDO ${i+1} [${o.game}]*\n▪ Nick: ${o.nameVal}\n▪ ID/User: \`${o.idVal}\`\n`;
-                if(o.extraVal) msg += `▪ Login: ${o.extraVal}\n`;
+                if(o.extraVal) msg += `▪ Datos Acceso: ${o.extraVal}\n`;
                 o.items.forEach(it => msg += `  - ${it.qty}x ${it.name}\n`);
                 msg += `\n`;
             });
-            msg += `━━━━━━━━━━━━━━━━━━━\n🏦 *PAGO:* ${paymentData.find(m => m.id === selectedPayment).name.toUpperCase()}\n💰 *TOTAL A PAGAR: C$ ${total}*\n━━━━━━━━━━━━━━━━━━━\n_¡Solicito procesar mi pedido!_`;
+
+            const method = paymentData.find(m => m.id === selectedPayment);
+            msg += `━━━━━━━━━━━━━━━━━━━\n🏦 *MÉTODO DE PAGO:* ${method.name.toUpperCase()}\n`;
+            
+            if(selectedPayment === 'paypal') {
+                let totalPaypal = (totalBase / 37 * 1.054) + 0.35;
+                msg += `💰 *TOTAL A ENVIAR:* $${totalPaypal.toFixed(2)} USD\n`;
+            } else if(selectedPayment === 'binance') {
+                msg += `💰 *TOTAL A ENVIAR:* ${(totalBase / 38).toFixed(2)} USDT\n`;
+            } else {
+                msg += `💰 *TOTAL A PAGAR: C$ ${totalBase}*\n`;
+            }
+            
+            msg += `━━━━━━━━━━━━━━━━━━━\n_¡Solicito procesar mi recarga!_`;
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -579,7 +748,7 @@
                 let e = document.createElement('div'); e.className = 'ember';
                 let s = Math.random() * 4 + 2; e.style.width = s + 'px'; e.style.height = s + 'px';
                 e.style.left = Math.random() * 100 + 'vw'; e.style.animationDuration = (Math.random() * 4 + 3) + 's';
-                e.style.animationDelay = (Math.random() * 5) + 's'; e.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+                e.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
                 container.appendChild(e);
             }
         }
