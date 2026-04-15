@@ -23,6 +23,7 @@
             margin: 0;
         }
 
+        /* --- Fondo Interactivo --- */
         #particles-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -47,6 +48,7 @@
 
         .title-nexus { font-family: 'Black Ops One', cursive; }
         
+        /* Efecto Gaming MULTISERVICIOS RGB */
         .gaming-text {
             background: linear-gradient(90deg, #ff00c8, #3b82f6, #a855f7, #ff00c8);
             background-size: 300% auto;
@@ -58,8 +60,13 @@
 
         @keyframes move-gradient { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
         @keyframes glow-text { from { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5)); } to { filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8)); } }
-        @keyframes blink-red { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 12px #ef4444); color: #fecaca; } 50% { opacity: 0.4; color: #ef4444; } }
-        .animate-blink-warning { animation: blink-red 1.2s infinite ease-in-out; }
+        
+        /* Advertencia Parpadeante */
+        @keyframes blink-red {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 12px #ef4444); color: #fecaca; }
+            50% { opacity: 0.3; filter: none; color: #ef4444; }
+        }
+        .animate-blink-warning { animation: blink-red 1s infinite ease-in-out; }
 
         .glass-panel { background: rgba(10, 10, 20, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
 
@@ -70,8 +77,7 @@
             z-index: 1;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            max-width: 320px;
-            width: 100%;
+            width: 280px;
         }
         .gamer-card::before {
             content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
@@ -79,15 +85,38 @@
             background-size: 300% 300%; z-index: -1; border-radius: 26px;
             animation: animateBorder 4s ease infinite; opacity: 0.2;
         }
-        .gamer-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px var(--theme-color); }
-        .gamer-card:hover::before { opacity: 0.6; }
+        .gamer-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px var(--theme-color); }
+        .gamer-card:hover::before { opacity: 0.8; }
 
         @keyframes animateBorder { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        .qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .price-glitz {
+            background: linear-gradient(90deg, #ffffff, var(--theme-color), #ffffff);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: shinePrice 3s linear infinite;
+        }
+        @keyframes shinePrice { to { background-position: 200% center; } }
+
+        .product-image-container {
+            width: 100%; height: 140px;
+            display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%);
+            border-radius: 16px; margin-bottom: 15px; position: relative; overflow: hidden;
+        }
+        .product-image-container img { max-width: 85%; max-height: 85%; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); transition: transform 0.4s ease; }
 
         .game-selector-btn { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0.4; filter: grayscale(1); }
-        .game-selector-btn.active { opacity: 1; filter: grayscale(0); transform: scale(1.1); border-color: var(--theme-color); box-shadow: 0 0 20px var(--theme-color); }
+        .game-selector-btn.active { opacity: 1; filter: grayscale(0); transform: scale(1.15); border-color: var(--theme-color); box-shadow: 0 0 30px var(--theme-color); }
+
+        .category-tab { transition: all 0.3s; position: relative; overflow: hidden; }
+        .category-tab.active { background: var(--theme-color); color: white; box-shadow: 0 5px 20px var(--theme-color); transform: translateY(-3px); }
+
+        .qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .animate-modal { animation: fadeInScale 0.3s ease-out forwards; }
 
         .btn-shine { position: relative; overflow: hidden; }
         .btn-shine::after {
@@ -96,25 +125,22 @@
             transform: skewX(-20deg); animation: shine 3s infinite;
         }
         @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
-
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .animate-modal { animation: fadeIn 0.3s ease-out; }
     </style>
 </head>
 <body class="min-h-screen pb-10">
 
     <div id="particles-bg"></div>
 
-    <!-- MODAL DE CONFIRMACIÓN -->
-    <div id="confirm-modal" class="fixed inset-0 z-[400] hidden items-center justify-center bg-black/90 backdrop-blur-md">
-        <div class="glass-panel w-11/12 max-w-sm rounded-3xl p-8 border border-white/10 text-center animate-modal shadow-2xl">
-            <div id="confirm-icon" class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-5">
+    <!-- MODAL CONFIRMACIÓN GLOBAL -->
+    <div id="confirm-modal" class="fixed inset-0 z-[500] hidden items-center justify-center bg-black/90 backdrop-blur-md">
+        <div class="glass-panel w-11/12 max-w-sm rounded-[32px] p-8 border border-white/10 text-center animate-modal shadow-2xl">
+            <div class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-5">
                 <svg width="32" height="32" fill="none" stroke="#3b82f6" stroke-width="2.5"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"/><path d="M12 8V12"/><path d="M12 16H12.01"/></svg>
             </div>
-            <h3 id="confirm-title" class="text-xl font-black mb-2 uppercase tracking-widest text-white">¿Confirmar Acción?</h3>
-            <p id="confirm-text" class="text-slate-400 text-sm mb-8 leading-relaxed">¿Estás seguro de que deseas realizar esta operación?</p>
+            <h3 id="confirm-title" class="text-xl font-black mb-2 uppercase tracking-widest text-white">¿Confirmar?</h3>
+            <p id="confirm-text" class="text-slate-400 text-sm mb-8 leading-relaxed">¿Deseas realizar esta acción?</p>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="closeConfirm(false)" class="bg-white/5 hover:bg-white/10 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all border border-white/5">Cancelar</button>
+                <button onclick="closeConfirm(false)" class="bg-white/5 hover:bg-white/10 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-white/5 transition-all">Cancelar</button>
                 <button onclick="closeConfirm(true)" class="bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg transition-all">Aceptar</button>
             </div>
         </div>
@@ -122,48 +148,36 @@
 
     <!-- MODAL DE EDICIÓN -->
     <div id="edit-modal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/95 backdrop-blur-xl transition-all">
-        <div id="edit-modal-content" class="glass-panel w-full max-w-2xl h-[90vh] md:h-auto md:max-h-[85vh] rounded-[40px] border border-white/10 flex flex-col overflow-hidden animate-modal shadow-2xl">
-            <!-- Header -->
+        <div id="edit-modal-content" class="glass-panel w-full max-w-2xl h-[90vh] md:h-auto md:max-h-[85vh] rounded-[40px] border border-white/10 flex flex-col overflow-hidden animate-modal">
             <div class="p-8 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-blue-900/40 to-black">
-                <h3 class="text-xl font-black text-white uppercase tracking-widest flex items-center gap-3">
-                    <span class="p-2.5 bg-blue-600 rounded-xl shadow-lg"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></span>
-                    Gestionar Cuenta
-                </h3>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 bg-white/5 hover:bg-white/10 p-3 rounded-2xl transition-all">
+                <h3 class="text-xl font-black text-white uppercase tracking-widest">Editar Pedido</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 bg-white/5 p-3 rounded-full transition-all">
                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
             </div>
-            
-            <!-- Body -->
             <div class="p-8 overflow-y-auto space-y-8 flex-grow bg-black/40">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black text-blue-400 uppercase tracking-widest ml-1">ID de Cuenta</label>
-                        <input type="text" id="edit-player-id" class="w-full bg-black/60 border border-white/10 rounded-2xl px-5 py-4 text-white text-lg focus:border-blue-500 focus:outline-none font-mono tracking-widest transition-all">
+                        <label class="text-[10px] font-black text-blue-400 uppercase tracking-widest ml-1">ID de la Cuenta</label>
+                        <input type="text" id="edit-player-id" class="w-full bg-black/60 border border-white/10 rounded-2xl px-5 py-4 text-white font-mono tracking-widest focus:border-blue-500 outline-none transition-all">
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-violet-400 uppercase tracking-widest ml-1">Nickname</label>
-                        <input type="text" id="edit-player-name" class="w-full bg-black/60 border border-white/10 rounded-2xl px-5 py-4 text-white text-lg focus:border-violet-500 focus:outline-none transition-all">
+                        <input type="text" id="edit-player-name" class="w-full bg-black/60 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-violet-500 outline-none transition-all">
                     </div>
-                    <div class="md:col-span-2 space-y-2" id="edit-extra-container">
-                        <label class="text-[10px] font-black text-emerald-400 uppercase tracking-widest ml-1">Datos de Acceso / Login</label>
-                        <textarea id="edit-player-extra" rows="2" class="w-full bg-black/60 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-emerald-500 focus:outline-none text-sm transition-all"></textarea>
+                    <div id="edit-extra-container" class="hidden md:col-span-2 space-y-2">
+                        <label class="text-[10px] font-black text-emerald-400 uppercase tracking-widest ml-1">Datos de Acceso</label>
+                        <textarea id="edit-player-extra" rows="2" class="w-full bg-black/60 border border-white/10 rounded-2xl px-5 py-4 text-white text-sm focus:border-emerald-500 outline-none transition-all"></textarea>
                     </div>
                 </div>
-
                 <div class="border-t border-white/10 pt-6">
-                    <h4 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-6">Ajustar Paquetes</h4>
+                    <h4 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-6">Paquetes Disponibles</h4>
                     <div id="edit-products-list" class="space-y-4"></div>
                 </div>
             </div>
-            
-            <!-- Footer -->
             <div class="p-8 border-t border-white/10 bg-black/80 flex flex-col sm:flex-row justify-between items-center gap-6">
-                <div class="text-center sm:text-left">
-                    <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Total Cuenta</p>
-                    <p class="text-3xl font-black text-blue-400">C$ <span id="edit-total">0</span></p>
-                </div>
-                <button onclick="confirmSaveEdit()" class="btn-shine w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-12 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl">Guardar Cambios</button>
+                <div><p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Subtotal Editado</p><p class="text-3xl font-black text-blue-400">C$ <span id="edit-total">0</span></p></div>
+                <button onclick="confirmSaveEdit()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-12 py-4 rounded-2xl font-black uppercase text-xs shadow-xl transition-all">Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -172,111 +186,114 @@
     <header class="relative pt-10 pb-8 px-4 text-center glass-panel border-b border-blue-600/30 sticky top-0 z-50 shadow-2xl">
         <div class="absolute top-4 right-4 flex items-center gap-3">
             <div id="music-bars" class="hidden flex items-end h-5"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-            <button onclick="toggleMusic()" class="bg-black/60 border border-blue-500/50 p-2.5 rounded-full hover:bg-blue-600 text-white transition-all shadow-lg">
+            <button onclick="toggleMusic()" class="bg-black/60 border border-blue-500/50 p-2.5 rounded-full hover:bg-blue-600 text-white shadow-lg">
                 <svg id="music-icon-play" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                 <svg id="music-icon-pause" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
         </div>
-
-        <div class="flex flex-col items-center justify-center gap-1">
-            <h1 class="title-nexus text-5xl sm:text-7xl text-white drop-shadow-[0_0_20px_rgba(59,130,246,0.7)]">ASTRAL NEXUS</h1>
+        <div class="flex flex-col items-center">
+            <h1 class="title-nexus text-5xl sm:text-7xl text-white drop-shadow-[0_0_15px_rgba(59,130,246,0.7)]">ASTRAL NEXUS</h1>
             <h2 class="text-2xl sm:text-3xl font-black tracking-[0.4em] uppercase gaming-text">MULTISERVICIOS</h2>
         </div>
-        
         <div class="flex items-center justify-center mt-6">
             <span id="current-date" class="text-violet-400 text-[10px] font-black uppercase tracking-[0.2em] bg-white/5 px-6 py-2 rounded-full border border-violet-500/20"></span>
         </div>
     </header>
 
-    <!-- ALERTAS Y GUIAS -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 space-y-8">
+    <!-- INSTRUCCIONES Y ALERTAS -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 space-y-10">
         <div class="flex flex-col lg:flex-row justify-center items-center lg:items-stretch gap-6">
             <!-- Guía -->
-            <div class="glass-panel p-8 rounded-[40px] border border-blue-500/30 flex flex-col justify-center flex-1 max-w-2xl">
-                <h3 class="text-xl font-black text-blue-400 mb-6 uppercase tracking-[0.2em] flex items-center gap-3">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    ¿Cómo solicitar?
+            <div class="glass-panel p-8 rounded-[40px] border border-blue-500/30 flex flex-col justify-center items-center text-center flex-1 max-w-2xl shadow-xl">
+                <h3 class="text-2xl font-black text-blue-400 mb-6 uppercase tracking-[0.2em] flex items-center gap-3">
+                    <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    PROCESO DE PEDIDO
                 </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="space-y-1"><span class="bg-blue-600 text-white w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black">1</span><p class="text-[11px] font-bold text-slate-400 uppercase">Selecciona el juego</p></div>
-                    <div class="space-y-1"><span class="bg-blue-600 text-white w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black">2</span><p class="text-[11px] font-bold text-slate-400 uppercase">Ingresa tus datos</p></div>
-                    <div class="space-y-1"><span class="bg-blue-600 text-white w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black">3</span><p class="text-[11px] font-bold text-slate-400 uppercase">Paga y confirma</p></div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    <div class="space-y-2"><span class="bg-blue-600 text-white w-8 h-8 rounded-2xl flex items-center justify-center font-black mx-auto shadow-[0_0_15px_#3b82f6]">1</span><p class="text-xs font-bold text-slate-300 uppercase">Selecciona el servicio</p></div>
+                    <div class="space-y-2"><span class="bg-blue-600 text-white w-8 h-8 rounded-2xl flex items-center justify-center font-black mx-auto shadow-[0_0_15px_#3b82f6]">2</span><p class="text-xs font-bold text-slate-300 uppercase">Ingresa ID y cantidades</p></div>
+                    <div class="space-y-2"><span class="bg-blue-600 text-white w-8 h-8 rounded-2xl flex items-center justify-center font-black mx-auto shadow-[0_0_15px_#3b82f6]">3</span><p class="text-xs font-bold text-slate-300 uppercase">Envía por WhatsApp</p></div>
                 </div>
             </div>
 
-            <!-- Portal de Canje -->
-            <div class="glass-panel p-8 rounded-[40px] border border-violet-500/40 bg-gradient-to-br from-violet-900/30 to-black flex flex-col justify-center items-center text-center group cursor-pointer w-full max-w-sm shadow-2xl" onclick="window.open('https://astralnexusmultiservicios-dotcom.github.io/CANJE-DE-TARJETA-REGALOS-DE-PINES-FREE-FIRE/', '_blank')">
-                <div class="bg-violet-600/20 p-4 rounded-3xl mb-4 group-hover:scale-110 transition-all shadow-[0_0_20px_rgba(168,85,247,0.2)]">
-                    <svg width="40" height="40" fill="none" stroke="#a855f7" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M12 15h.01"/></svg>
+            <!-- Portal -->
+            <div class="glass-panel p-8 rounded-[40px] border border-violet-500/40 bg-gradient-to-br from-violet-900/30 to-black flex flex-col justify-center items-center text-center group cursor-pointer w-full max-w-sm shadow-2xl transition-all hover:scale-[1.03]" onclick="window.open('https://astralnexusmultiservicios-dotcom.github.io/CANJE-DE-TARJETA-REGALOS-DE-PINES-FREE-FIRE/', '_blank')">
+                <div class="bg-violet-600/20 p-5 rounded-[24px] mb-4 group-hover:scale-110 transition-all duration-500 shadow-[0_0_25px_rgba(168,85,247,0.3)]">
+                    <svg width="42" height="42" fill="none" stroke="#a855f7" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M12 15h.01"/></svg>
                 </div>
-                <h3 class="text-xl font-black text-white uppercase tracking-widest group-hover:text-violet-300">CANJEAR PINES</h3>
-                <div class="mt-4 bg-violet-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase text-white shadow-lg group-hover:bg-violet-500">Acceso Directo</div>
+                <h3 class="text-2xl font-black text-white uppercase tracking-tighter group-hover:text-violet-300 transition-colors">CANJEAR PINES</h3>
+                <p class="text-violet-200/50 text-[10px] font-bold uppercase tracking-[0.2em] mt-1 mb-6">Portal Automático FF</p>
+                <div class="bg-violet-600 px-10 py-3 rounded-2xl text-[10px] font-black uppercase text-white shadow-xl group-hover:bg-violet-500 transition-all">Acceder Ahora</div>
             </div>
         </div>
 
-        <!-- Alerta Crítica -->
-        <div class="bg-red-900/30 border border-red-500/50 rounded-[32px] p-6 flex flex-col sm:flex-row items-center gap-6 text-red-200 mx-auto max-w-5xl shadow-2xl">
-            <svg width="40" height="40" fill="none" stroke="#ef4444" stroke-width="3" class="animate-bounce shrink-0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <p class="text-sm font-black leading-tight text-center sm:text-left">
-                <span class="uppercase tracking-widest text-red-400 block mb-1 animate-blink-warning text-lg">⚠️ ADVERTENCIA ANTI-FRAUDE:</span>
-                Está terminantemente prohibido modificar el mensaje de WhatsApp. Todo pedido es verificado contra nuestra base de datos. Si alteras los montos, el pedido será ignorado.
+        <!-- Alerta Parpadeante -->
+        <div class="bg-red-900/30 border border-red-500/50 rounded-[32px] p-6 flex flex-col sm:flex-row items-center gap-6 text-red-200 mx-auto max-w-5xl shadow-2xl relative overflow-hidden">
+            <div class="absolute inset-0 bg-red-600/5 animate-pulse"></div>
+            <div class="bg-red-600/30 p-4 rounded-3xl shrink-0 shadow-lg">
+                <svg width="36" height="36" fill="none" stroke="#ef4444" stroke-width="3" class="animate-bounce"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <p class="text-sm font-black leading-tight text-center sm:text-left relative z-10">
+                <span class="uppercase tracking-[0.2em] text-red-400 block mb-2 animate-blink-warning text-xl">PROHIBIDO EDITAR MENSAJE:</span>
+                Nuestro sistema audita cada pedido. Cualquier alteración al texto generado para WhatsApp resultará en la cancelación definitiva del servicio sin reembolso. ¡Evite sanciones!
             </p>
         </div>
     </div>
 
-    <!-- SELECTOR DE JUEGO -->
+    <!-- SELECTOR DE JUEGOS GIGANTE -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-16">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            <button onclick="selectGame('ff')" id="game-ff" class="game-selector-btn active glass-panel p-8 rounded-[40px] flex flex-col items-center gap-5 shadow-2xl border-white/5">
-                <img src="https://play-lh.googleusercontent.com/Tzh1vMigK1Cn7_KIaMvKBVQRQapIMWMMqqyA6UqJTAYRpino4vvX6ZvYcVjZ_D8g19-DfHKCVeO2QPWl8vHGzw=s96-rw" class="w-24 h-24 md:w-32 md:h-32 rounded-[32px] object-cover shadow-2xl">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <button onclick="selectGame('ff')" id="game-ff" class="game-selector-btn active glass-panel p-8 rounded-[48px] flex flex-col items-center gap-5 shadow-2xl border-white/5 group">
+                <img src="https://play-lh.googleusercontent.com/Tzh1vMigK1Cn7_KIaMvKBVQRQapIMWMMqqyA6UqJTAYRpino4vvX6ZvYcVjZ_D8g19-DfHKCVeO2QPWl8vHGzw=s96-rw" class="w-24 h-24 md:w-32 md:h-32 rounded-[32px] object-cover shadow-2xl transition-transform group-hover:scale-110">
                 <span class="font-black text-sm uppercase tracking-[0.2em]">Free Fire</span>
             </button>
-            <button onclick="selectGame('roblox')" id="game-roblox" class="game-selector-btn glass-panel p-8 rounded-[40px] flex flex-col items-center gap-5 shadow-2xl border-white/5">
-                <img src="https://img.icons8.com/color/96/roblox.png" class="w-24 h-24 md:w-32 md:h-32 object-contain shadow-2xl">
+            <button onclick="selectGame('roblox')" id="game-roblox" class="game-selector-btn glass-panel p-8 rounded-[48px] flex flex-col items-center gap-5 shadow-2xl border-white/5 group">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Roblox_Logo_2022.jpg" class="w-24 h-24 md:w-32 md:h-32 rounded-[32px] object-cover shadow-2xl transition-transform group-hover:scale-110">
                 <span class="font-black text-sm uppercase tracking-[0.2em]">Roblox</span>
             </button>
-            <button onclick="selectGame('blood')" id="game-blood" class="game-selector-btn glass-panel p-8 rounded-[40px] flex flex-col items-center gap-5 shadow-2xl border-white/5">
-                <img src="https://play-lh.googleusercontent.com/znCkgdQEOtWD2Y9to3MF5g9czaLvdzUhjn2UmPu1KEbedphqcHGf39Qe0sjwlP0JLvan0TFqyNaSO64rORSB=s96-rw" class="w-24 h-24 md:w-32 md:h-32 rounded-[32px] object-cover shadow-2xl">
+            <button onclick="selectGame('blood')" id="game-blood" class="game-selector-btn glass-panel p-8 rounded-[48px] flex flex-col items-center gap-5 shadow-2xl border-white/5 group">
+                <img src="https://play-lh.googleusercontent.com/znCkgdQEOtWD2Y9to3MF5g9czaLvdzUhjn2UmPu1KEbedphqcHGf39Qe0sjwlP0JLvan0TFqyNaSO64rORSB=s96-rw" class="w-24 h-24 md:w-32 md:h-32 rounded-[32px] object-cover shadow-2xl transition-transform group-hover:scale-110">
                 <span class="font-black text-sm uppercase tracking-[0.2em]">Blood Strike</span>
             </button>
-            <button onclick="selectGame('tiktok')" id="game-tiktok" class="game-selector-btn glass-panel p-8 rounded-[40px] flex flex-col items-center gap-5 shadow-2xl border-white/5">
-                <img src="https://img.icons8.com/color/96/tiktok.png" class="w-24 h-24 md:w-32 md:h-32 object-contain shadow-2xl">
+            <button onclick="selectGame('tiktok')" id="game-tiktok" class="game-selector-btn glass-panel p-8 rounded-[48px] flex flex-col items-center gap-5 shadow-2xl border-white/5 group">
+                <img src="https://img.icons8.com/color/96/tiktok.png" class="w-24 h-24 md:w-32 md:h-32 object-contain shadow-2xl transition-transform group-hover:scale-110">
                 <span class="font-black text-sm uppercase tracking-[0.2em]">TikTok</span>
             </button>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         
         <!-- Formulario -->
         <div class="lg:col-span-8 space-y-10">
-            <div class="glass-panel rounded-[48px] p-8 sm:p-12 border border-slate-800 shadow-2xl relative">
-                <div id="category-tabs" class="flex flex-wrap gap-2 mb-12 bg-black/40 p-2.5 rounded-[28px] border border-white/5 shadow-inner"></div>
+            <div class="glass-panel rounded-[48px] p-8 sm:p-12 border border-slate-800 shadow-2xl relative overflow-hidden">
+                <!-- PESTAÑAS COLORIDAS -->
+                <div id="category-tabs" class="flex flex-wrap gap-3 mb-12 bg-black/40 p-3 rounded-[32px] border border-white/5 shadow-inner"></div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
                     <div class="space-y-3">
-                        <label id="label-id" class="text-blue-400 text-xs font-black uppercase tracking-[0.2em] ml-3">ID Numérico</label>
-                        <input type="text" id="player-id" placeholder="Ingresa ID de cuenta" class="w-full bg-black/60 border border-white/10 rounded-[28px] px-8 py-5 text-white text-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-mono tracking-widest">
+                        <label id="label-id" class="text-blue-400 text-xs font-black uppercase tracking-[0.2em] ml-3">ID / Usuario</label>
+                        <input type="text" id="player-id" placeholder="ID de cuenta" class="w-full bg-black/60 border border-white/10 rounded-[28px] px-8 py-5 text-white text-xl focus:border-blue-500 outline-none transition-all font-mono tracking-widest shadow-inner">
                     </div>
                     <div class="space-y-3">
                         <label class="text-violet-400 text-xs font-black uppercase tracking-[0.2em] ml-3">Nick en Juego</label>
-                        <input type="text" id="player-name" placeholder="Astral Player" class="w-full bg-black/60 border border-white/10 rounded-[28px] px-8 py-5 text-white text-xl focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 outline-none transition-all">
+                        <input type="text" id="player-name" placeholder="Astral Player" class="w-full bg-black/60 border border-white/10 rounded-[28px] px-8 py-5 text-white text-xl focus:border-violet-500 outline-none transition-all shadow-inner">
                     </div>
                     <div id="extra-data-container" class="hidden sm:col-span-2 space-y-3 animate-slide-up">
-                        <label id="label-extra" class="text-emerald-400 text-xs font-black uppercase tracking-[0.2em] ml-3">Datos Requeridos</label>
-                        <textarea id="player-extra" rows="2" placeholder="Información de acceso para este servicio..." class="w-full bg-black/60 border border-white/10 rounded-[28px] px-8 py-5 text-white focus:border-emerald-500 outline-none text-sm transition-all"></textarea>
+                        <label id="label-extra" class="text-emerald-400 text-xs font-black uppercase tracking-[0.2em] ml-3">Datos de Acceso</label>
+                        <textarea id="player-extra" rows="2" placeholder="Información de login..." class="w-full bg-black/60 border border-white/10 rounded-[28px] px-8 py-5 text-white focus:border-emerald-500 outline-none text-sm transition-all shadow-inner"></textarea>
                     </div>
                 </div>
 
                 <!-- PRODUCTOS (CENTRADO) -->
-                <div id="products-grid" class="flex flex-wrap justify-center gap-8 mb-12"></div>
+                <div id="products-grid" class="flex flex-wrap justify-center gap-10 mb-12"></div>
 
-                <div class="bg-gradient-to-r from-blue-900/20 to-black rounded-[40px] p-10 border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-10 shadow-inner">
+                <div class="bg-gradient-to-r from-blue-900/20 to-black rounded-[40px] p-10 border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-10 shadow-2xl">
                     <div class="text-center sm:text-left">
-                        <p class="text-blue-300/40 text-[10px] font-black uppercase tracking-[0.3em] mb-2">Subtotal de Selección</p>
+                        <p class="text-blue-300/40 text-[10px] font-black uppercase tracking-[0.3em] mb-2">Total de Cuenta</p>
                         <p class="text-5xl font-black text-white">C$ <span id="current-selection-total">0</span></p>
                     </div>
-                    <button onclick="confirmAddAccount()" class="btn-shine w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-black py-7 px-14 rounded-[32px] shadow-[0_0_30px_rgba(59,130,246,0.4)] transition-all uppercase tracking-widest text-sm hover:scale-105 active:scale-95">
+                    <button onclick="confirmAddAccount()" class="btn-shine w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-black py-7 px-14 rounded-[32px] shadow-2xl transition-all uppercase tracking-widest text-sm hover:scale-105 active:scale-95">
                         Añadir al Carrito
                     </button>
                 </div>
@@ -288,16 +305,16 @@
             <div class="glass-panel rounded-[48px] p-8 shadow-2xl border border-white/5 flex flex-col min-h-[600px]">
                 <h2 class="text-xl font-black mb-8 flex items-center gap-4 text-white uppercase border-b border-white/5 pb-6 tracking-widest">
                     <svg width="28" height="28" fill="none" stroke="#3b82f6" stroke-width="2.5"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-                    Tu Carrito
+                    Carrito
                 </h2>
 
                 <div id="order-list" class="flex-grow overflow-y-auto space-y-6 mb-8 max-h-[35vh] pr-2">
-                    <div class="text-center opacity-20 py-12 text-xs font-black uppercase tracking-widest">Vacio</div>
+                    <div class="text-center opacity-20 py-12 text-xs font-black uppercase tracking-widest text-slate-500">Vacio</div>
                 </div>
 
                 <div class="mt-auto space-y-8">
                     <div>
-                        <span class="text-blue-400 font-black uppercase text-[9px] tracking-[0.3em] mb-4 block text-center">Medio de Pago</span>
+                        <span class="text-blue-400 font-black uppercase text-[9px] tracking-[0.3em] mb-4 block text-center underline">Pago</span>
                         <div class="grid grid-cols-5 gap-2 mb-6" id="payment-methods-grid"></div>
 
                         <div id="bank-info-box" class="hidden bg-black/60 border border-blue-500/20 rounded-3xl p-5 relative animate-slide-up shadow-inner">
@@ -305,7 +322,7 @@
                                 <span class="text-[8px] font-black uppercase hidden group-hover/copy:block">Copiar</span>
                                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                             </button>
-                            <p class="text-[10px] text-blue-400 font-black uppercase mb-2 tracking-widest">Detalles para Transferencia</p>
+                            <p class="text-[10px] text-blue-400 font-black uppercase mb-2 tracking-widest">Detalles Bancarios</p>
                             <pre id="bank-details" class="text-[10px] text-slate-300 font-mono whitespace-pre-wrap leading-tight pr-10"></pre>
                         </div>
                     </div>
@@ -313,11 +330,11 @@
                     <div class="pt-8 border-t border-white/10">
                         <div id="conversion-notice" class="hidden text-right text-[10px] text-amber-400 font-black mb-2 uppercase tracking-tighter italic"></div>
                         <div class="flex justify-between items-center mb-8 px-2">
-                            <span class="text-slate-400 font-black uppercase text-xs tracking-widest">Pago Total</span>
+                            <span class="text-slate-400 font-black uppercase text-xs tracking-widest">Total Final</span>
                             <span class="text-3xl font-black text-white" id="display-total-final">C$ 0</span>
                         </div>
                         <button onclick="confirmFinalOrder()" id="btn-checkout" class="w-full bg-slate-800 text-slate-500 font-black py-7 rounded-[32px] transition-all flex items-center justify-center gap-4 border border-slate-700 cursor-not-allowed uppercase text-sm tracking-[0.3em] shadow-lg">
-                            Enviar Pedido
+                            Enviar WhatsApp
                         </button>
                     </div>
                 </div>
@@ -333,48 +350,61 @@
 
         const products = [
             // FREE FIRE
-            { id: 'ff100', game: 'ff', category: 'diamond', name: '100+10 Diamantes', price: 36, image: 'https://www.dropbox.com/scl/fi/tdox1df38bo3tgsocxu6q/image_1772916122952.png?rlkey=b9mwpym9h1faemlm8bxewklfp&st=st1txhf0&raw=1' },
-            { id: 'ff310', game: 'ff', category: 'diamond', name: '310+31 Diamantes', price: 115, image: 'https://www.dropbox.com/scl/fi/ecgi09ijx7zs3elxwi7y4/image_1772916122952-1.png?rlkey=v297zoyo1vr7jf04sj14hhwlh&st=xuyea2vd&raw=1' },
-            { id: 'ff520', game: 'ff', category: 'diamond', name: '520+52 Diamantes', price: 170, image: 'https://www.dropbox.com/scl/fi/nn9apv1k8yor5qz5po8s5/image_1772916122952-2.png?rlkey=7fjv3bhqibn2btdeqdw4113i4&st=mtoze6sz&raw=1' },
-            { id: 'ff1060', game: 'ff', category: 'diamond', name: '1,060+106 Diamantes', price: 324, image: 'https://www.dropbox.com/scl/fi/mkls8ndz8ffgkzjvx64j8/image_1772916122952-4.png?rlkey=zozedza69urinjjkuqk16zr8f&st=lu5mi1v7&raw=1' },
-            { id: 'ff2180', game: 'ff', category: 'diamond', name: '2,180+218 Diamantes', price: 628, image: 'https://www.dropbox.com/scl/fi/fvrtjxgwuvn3bv4xveclh/image_1772916122952-5.png?rlkey=455pcid1x6urd4czv5c9d75jf&st=gu07m28u&raw=1' },
-            { id: 'ff5600', game: 'ff', category: 'diamond', name: '5,600+560 Diamantes', price: 1590, image: 'https://www.dropbox.com/scl/fi/k44770iehaqw23f59z4a0/image_1772916122952-6.png?rlkey=gba9m1ttqvkcviuc63dked3ot&st=h4p9kui3&raw=1' },
-            { id: 'ffmsb', game: 'ff', category: 'card', name: 'Semanal Básica', price: 25, image: 'https://www.dropbox.com/scl/fi/ahq38o0mw6s2qqcvb6kti/image_1772916122952-8.png?rlkey=6267ei3elqqf47gt8vdjc6akb&st=tahnif9f&raw=1' },
-            { id: 'ffms', game: 'ff', category: 'card', name: 'Membresía Semanal', price: 75, image: 'https://www.dropbox.com/scl/fi/x4ri4lon1sruytfu68ppt/image_1772916122952-9.png?rlkey=4ot5vjkekuy6v0tjs8bybl899&st=4qfj9vye&raw=1' },
-            { id: 'ffmm', game: 'ff', category: 'card', name: 'Membresía Mensual', price: 365, image: 'https://www.dropbox.com/scl/fi/ryb89djsol1a2vly7lxur/image_1772916122952-10.png?rlkey=6rbdtojsazf6d17qelpsrb234&st=pjigbc4v&raw=1' },
-            { id: 'ffpb', game: 'ff', category: 'pass', name: 'Pase Booyahh', price: 120, image: 'https://www.dropbox.com/scl/fi/jkburejmve5ftohs9vupu/image_1772916122952-7.png?rlkey=bc7uvkx839min1rbik2e3xm06&st=wlaq1zof&raw=1' },
+            { id: 'ff100', game: 'ff', category: 'diamond', name: '100+10 Diamantes', price: 38, image: 'https://www.dropbox.com/scl/fi/tdox1df38bo3tgsocxu6q/image_1772916122952.png?rlkey=b9mwpym9h1faemlm8bxewklfp&st=st1txhf0&raw=1', color: '#3b82f6' },
+            { id: 'ff310', game: 'ff', category: 'diamond', name: '310+31 Diamantes', price: 115, image: 'https://www.dropbox.com/scl/fi/ecgi09ijx7zs3elxwi7y4/image_1772916122952-1.png?rlkey=v297zoyo1vr7jf04sj14hhwlh&st=xuyea2vd&raw=1', color: '#3b82f6' },
+            { id: 'ff520', game: 'ff', category: 'diamond', name: '520+52 Diamantes', price: 175, image: 'https://www.dropbox.com/scl/fi/nn9apv1k8yor5qz5po8s5/image_1772916122952-2.png?rlkey=7fjv3bhqibn2btdeqdw4113i4&st=mtoze6sz&raw=1', color: '#3b82f6' },
+            { id: 'ff1060', game: 'ff', category: 'diamond', name: '1,060+106 Diamantes', price: 335, image: 'https://www.dropbox.com/scl/fi/mkls8ndz8ffgkzjvx64j8/image_1772916122952-4.png?rlkey=zozedza69urinjjkuqk16zr8f&st=lu5mi1v7&raw=1', color: '#3b82f6' },
+            { id: 'ff2180', game: 'ff', category: 'diamond', name: '2,180+218 Diamantes', price: 635, image: 'https://www.dropbox.com/scl/fi/fvrtjxgwuvn3bv4xveclh/image_1772916122952-5.png?rlkey=455pcid1x6urd4czv5c9d75jf&st=gu07m28u&raw=1', color: '#3b82f6' },
+            { id: 'ff5600', game: 'ff', category: 'diamond', name: '5,600+560 Diamantes', price: 1650, image: 'https://www.dropbox.com/scl/fi/k44770iehaqw23f59z4a0/image_1772916122952-6.png?rlkey=gba9m1ttqvkcviuc63dked3ot&st=h4p9kui3&raw=1', color: '#3b82f6' },
+            { id: 'ffmsb', game: 'ff', category: 'card', name: 'Semanal Básica', price: 25, image: 'https://www.dropbox.com/scl/fi/ahq38o0mw6s2qqcvb6kti/image_1772916122952-8.png?rlkey=6267ei3elqqf47gt8vdjc6akb&st=tahnif9f&raw=1', color: '#a855f7' },
+            { id: 'ffms', game: 'ff', category: 'card', name: 'Membresía Semanal', price: 75, image: 'https://www.dropbox.com/scl/fi/x4ri4lon1sruytfu68ppt/image_1772916122952-9.png?rlkey=4ot5vjkekuy6v0tjs8bybl899&st=4qfj9vye&raw=1', color: '#a855f7' },
+            { id: 'ffmm', game: 'ff', category: 'card', name: 'Membresía Mensual', price: 365, image: 'https://www.dropbox.com/scl/fi/ryb89djsol1a2vly7lxur/image_1772916122952-10.png?rlkey=6rbdtojsazf6d17qelpsrb234&st=pjigbc4v&raw=1', color: '#a855f7' },
+            { id: 'ffpb', game: 'ff', category: 'pass', name: 'Pase Booyahh', price: 120, image: 'https://www.dropbox.com/scl/fi/jkburejmve5ftohs9vupu/image_1772916122952-7.png?rlkey=bc7uvkx839min1rbik2e3xm06&st=wlaq1zof&raw=1', color: '#f43f5e' },
 
             // ROBLOX
-            { id: 'rbx80', game: 'roblox', category: 'direct', name: '80 Robux (Directo)', price: 45, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx400', game: 'roblox', category: 'direct', name: '400 Robux (Directo)', price: 190, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx800', game: 'roblox', category: 'direct', name: '800 Robux (Directo)', price: 360, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbx1700', game: 'roblox', category: 'direct', name: '1700 Robux (Directo)', price: 720, image: 'https://img.icons8.com/color/96/roblox.png' },
-            { id: 'rbxg10', game: 'roblox', category: 'gift', name: 'Gift Card $10', price: 410, image: 'https://img.icons8.com/color/96/gift-card.png' },
-            { id: 'rbxg25', game: 'roblox', category: 'gift', name: 'Gift Card $25', price: 1020, image: 'https://img.icons8.com/color/96/gift-card.png' },
-            { id: 'rbxg50', game: 'roblox', category: 'gift', name: 'Gift Card $50', price: 2040, image: 'https://img.icons8.com/color/96/gift-card.png' },
+            { id: 'rbx40', game: 'roblox', category: 'direct', name: '40 Robux (Directo)', price: 25, image: 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Roblox_Logo_2022.jpg', color: '#6366f1' },
+            { id: 'rbx80', game: 'roblox', category: 'direct', name: '80 Robux (Directo)', price: 45, image: 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Roblox_Logo_2022.jpg', color: '#6366f1' },
+            { id: 'rbx400', game: 'roblox', category: 'direct', name: '400 Robux (Directo)', price: 215, image: 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Roblox_Logo_2022.jpg', color: '#6366f1' },
+            { id: 'rbx800', game: 'roblox', category: 'direct', name: '800 Robux (Directo)', price: 425, image: 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Roblox_Logo_2022.jpg', color: '#6366f1' },
+            { id: 'rbxg3', game: 'roblox', category: 'gift', name: 'Gift Card $3', price: 165, image: 'https://img.icons8.com/color/96/gift-card.png', color: '#10b981' },
+            { id: 'rbxg5', game: 'roblox', category: 'gift', name: 'Gift Card $5', price: 265, image: 'https://img.icons8.com/color/96/gift-card.png', color: '#10b981' },
+            { id: 'rbxg10', game: 'roblox', category: 'gift', name: 'Gift Card $10', price: 455, image: 'https://img.icons8.com/color/96/gift-card.png', color: '#10b981' },
 
             // BLOOD STRIKE
-            { id: 'bs100', game: 'blood', category: 'gold', name: '100 Barras Oro', price: 42, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg' },
-            { id: 'bs500', game: 'blood', category: 'gold', name: '500 Barras Oro', price: 200, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg' },
-            { id: 'bs1000', game: 'blood', category: 'gold', name: '1000 Barras Oro', price: 380, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg' },
-            { id: 'bs2000', game: 'blood', category: 'gold', name: '2000 Barras Oro', price: 750, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg' },
+            { id: 'bs50', game: 'blood', category: 'gold', name: '50 + 6 Barras Oro', price: 25, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
+            { id: 'bs100', game: 'blood', category: 'gold', name: '100 + 16 Barras Oro', price: 45, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
+            { id: 'bs300', game: 'blood', category: 'gold', name: '300 + 52 Barras Oro', price: 135, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
+            { id: 'bs500', game: 'blood', category: 'gold', name: '500 + 94 Barras Oro', price: 225, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
+            { id: 'bs1000', game: 'blood', category: 'gold', name: '1000 + 210 Barras Oro', price: 425, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
+            { id: 'bs2000', game: 'blood', category: 'gold', name: '2000 + 486 Barras Oro', price: 850, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
+            { id: 'bs5000', game: 'blood', category: 'gold', name: '5000 + 1380 Barras Oro', price: 2125, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
+            { id: 'bs10000', game: 'blood', category: 'gold', name: '10000 + 2760 Barras Oro', price: 4250, image: 'https://cdn.moogold.com/2023/11/blood-strike.jpg', color: '#eab308' },
 
             // TIKTOK
-            { id: 'tk70', game: 'tiktok', category: 'coins', name: '70 Monedas', price: 40, image: 'https://img.icons8.com/color/96/tiktok.png' },
-            { id: 'tk350', game: 'tiktok', category: 'coins', name: '350 Monedas', price: 195, image: 'https://img.icons8.com/color/96/tiktok.png' },
-            { id: 'tk700', game: 'tiktok', category: 'coins', name: '700 Monedas', price: 380, image: 'https://img.icons8.com/color/96/tiktok.png' },
+            { id: 'tk50', game: 'tiktok', category: 'coins', name: '50 Monedas', price: 25, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk100', game: 'tiktok', category: 'coins', name: '100 Monedas', price: 49, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk150', game: 'tiktok', category: 'coins', name: '150 Monedas', price: 74, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk200', game: 'tiktok', category: 'coins', name: '200 Monedas', price: 99, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk250', game: 'tiktok', category: 'coins', name: '250 Monedas', price: 124, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk300', game: 'tiktok', category: 'coins', name: '300 Monedas', price: 149, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk350', game: 'tiktok', category: 'coins', name: '350 Monedas', price: 174, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk400', game: 'tiktok', category: 'coins', name: '400 Monedas', price: 199, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk450', game: 'tiktok', category: 'coins', name: '450 Monedas', price: 224, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk500', game: 'tiktok', category: 'coins', name: '500 Monedas', price: 249, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk1000', game: 'tiktok', category: 'coins', name: '1000 Monedas', price: 499, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
+            { id: 'tk2000', game: 'tiktok', category: 'coins', name: '2000 Monedas', price: 999, image: 'https://img.icons8.com/color/96/tiktok.png', color: '#f43f5e' },
         ];
 
         const gameConfigs = {
-            ff: { color: '#3b82f6', label: 'ID Numérico FF', extra: false, tabs: { diamond: 'Diamantes', card: 'Membresías', pass: 'Pases' } },
-            roblox: { color: '#6366f1', label: 'ID / Nombre Usuario', extra: 'Usuario y Contraseña / Código Inicio Rápido', tabs: { direct: 'Recarga Directa', gift: 'Tarjetas Regalo' } },
-            blood: { color: '#eab308', label: 'Strike ID', extra: false, tabs: { gold: 'Barras de Oro' } },
-            tiktok: { color: '#f43f5e', label: '@ID Usuario TikTok', extra: 'Datos Vinculados (Método de Login + Pass)', tabs: { coins: 'Monedas TikTok' } }
+            ff: { color: '#3b82f6', label: 'ID Numérico FF', extra: false, tabs: { diamond: 'Diamantes', card: 'Membresías', pass: 'Pases' }, tabColors: { diamond: '#3b82f6', card: '#a855f7', pass: '#f43f5e' } },
+            roblox: { color: '#6366f1', label: 'ID / Nombre Usuario', extra: 'Usuario y Contraseña / Código Inicio Rápido', tabs: { direct: 'Recarga Directa', gift: 'Tarjetas Regalo' }, tabColors: { direct: '#6366f1', gift: '#10b981' } },
+            blood: { color: '#eab308', label: 'Strike ID', extra: false, tabs: { gold: 'Barras de Oro' }, tabColors: { gold: '#eab308' } },
+            tiktok: { color: '#f43f5e', label: '@ID Usuario TikTok', extra: 'Datos Vinculados (Método Login + Pass)', tabs: { coins: 'Monedas TikTok' }, tabColors: { coins: '#f43f5e' } }
         };
 
         const paymentData = [
-            { id: 'bac', name: 'BAC', color: 'bg-red-600', text: '🏦 BAC CREDOMATIC\nN° Cuenta (C$): 373461441\nTitular: ANTHONY FONSECA JIMENEZ' },
-            { id: 'banpro', name: 'Banpro', color: 'bg-green-600', text: '🏦 BANPRO PROMERICA\nN° Cuenta (C$): 10021500519545\nTitular: ANTHONY FONSECA JIMENEZ' },
+            { id: 'bac', name: 'BAC', color: 'bg-red-600', text: '🏦 BANCO BAC CREDOMATIC\nN° Cuenta (C$): 373461441\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ' },
+            { id: 'banpro', name: 'Banpro', color: 'bg-green-600', text: '🏦 BANCO PROMERICA (BANPRO)\nN° Cuenta (C$): 10021500519545\nTitular: ANTHONY ENRIQUE FONSECA JIMENEZ' },
             { id: 'billetera', name: 'Billetera', color: 'bg-emerald-500', text: '📱 BILLETERA BANPRO\nNúmero: 58276230\nTitular: Anthony Fonseca' },
             { id: 'binance', name: 'Binance', color: 'bg-yellow-500', text: '🔶 BINANCE PAY\nID: 881558745\n(Tasa cambio: C$ 38 por USDT)' },
             { id: 'paypal', name: 'PayPal', color: 'bg-blue-600', text: '🅿️ PAYPAL\nCorreo: anthonyfonjim@gmail.com\n(Comisión: 5.4% + $0.35 USD)' }
@@ -385,30 +415,33 @@
         let currentSelection = {};
         let globalOrders = [];
         let selectedPayment = null;
+        let confirmAction = null;
         let editingIndex = -1;
         let tempEditSelection = {};
-        let confirmAction = null;
 
         function initApp() {
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-NI', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            const dateEl = document.getElementById('current-date');
+            if(dateEl) dateEl.innerText = new Date().toLocaleDateString('es-NI', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
             renderPaymentMethods();
             selectGame('ff');
             createEmbers();
         }
 
-        // --- SISTEMA DE CONFIRMACIÓN ---
+        // --- SISTEMA CONFIRMACIÓN ---
         function showConfirm(title, text, callback) {
             const modal = document.getElementById('confirm-modal');
-            if(!modal) return callback(); // Fallback si el modal no existe por alguna razón
-            document.getElementById('confirm-title').innerText = title;
-            document.getElementById('confirm-text').innerText = text;
+            const titleEl = document.getElementById('confirm-title');
+            const textEl = document.getElementById('confirm-text');
+            if(!modal || !titleEl || !textEl) return callback();
+            titleEl.innerText = title;
+            textEl.innerText = text;
             confirmAction = callback;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
 
         function closeConfirm(confirmed) {
-            document.getElementById('confirm-modal').classList.replace('flex', 'hidden');
+            document.getElementById('confirm-modal')?.classList.replace('flex', 'hidden');
             if(confirmed && confirmAction) confirmAction();
             confirmAction = null;
         }
@@ -417,7 +450,6 @@
             selectedGame = gameId;
             const config = gameConfigs[gameId];
             
-            // Null check para el error reportado
             const root = document.documentElement;
             const labelId = document.getElementById('label-id');
             const themeIcon = document.getElementById('theme-icon-bg');
@@ -438,8 +470,7 @@
             }
 
             document.querySelectorAll('.game-selector-btn').forEach(b => b.classList.remove('active'));
-            const btn = document.getElementById(`game-${gameId}`);
-            if(btn) btn.classList.add('active');
+            document.getElementById(`game-${gameId}`)?.classList.add('active');
 
             const tabsDiv = document.getElementById('category-tabs');
             if(tabsDiv) {
@@ -447,7 +478,13 @@
                 const entries = Object.entries(config.tabs);
                 activeTab = entries[0][0];
                 entries.forEach(([id, name]) => {
-                    tabsDiv.innerHTML += `<button onclick="switchTab('${id}')" id="tab-${id}" class="category-tab flex-1 py-4 px-6 rounded-[20px] font-black text-[10px] uppercase tracking-widest ${id === activeTab ? 'active' : 'bg-white/5 text-slate-500'}">${name}</button>`;
+                    const color = config.tabColors[id];
+                    tabsDiv.innerHTML += `
+                        <button onclick="switchTab('${id}')" id="tab-${id}" 
+                            class="category-tab flex-1 py-4 px-6 rounded-[20px] font-black text-[10px] uppercase tracking-widest transition-all" 
+                            style="${id === activeTab ? `background: ${color}; color: white; box-shadow: 0 5px 15px ${color};` : `background: rgba(255,255,255,0.05); color: #666;`}">
+                            ${name}
+                        </button>`;
                 });
             }
             renderProducts();
@@ -455,14 +492,20 @@
 
         function switchTab(tabId) {
             activeTab = tabId;
+            const config = gameConfigs[selectedGame];
             document.querySelectorAll('.category-tab').forEach(t => {
+                t.style.background = 'rgba(255,255,255,0.05)';
+                t.style.color = '#666';
+                t.style.boxShadow = 'none';
                 t.classList.remove('active');
-                t.classList.add('bg-white/5', 'text-slate-500');
             });
             const active = document.getElementById(`tab-${tabId}`);
             if(active) {
+                const color = config.tabColors[tabId];
+                active.style.background = color;
+                active.style.color = 'white';
+                active.style.boxShadow = `0 5px 15px ${color}`;
                 active.classList.add('active');
-                active.classList.remove('bg-white/5', 'text-slate-500');
             }
             renderProducts();
         }
@@ -476,17 +519,17 @@
             filtered.forEach(p => {
                 const qty = currentSelection[p.id] || 0;
                 grid.innerHTML += `
-                    <div class="gamer-card p-6 flex flex-col justify-between animate-slide-up" style="--theme-color: ${gameConfigs[selectedGame].color}">
+                    <div class="gamer-card p-6 flex flex-col justify-between animate-slide-up" style="--theme-color: ${p.color}">
                         <div class="product-image-container cursor-pointer" onclick="openModal('${p.image}')">
                             <img src="${p.image}" alt="${p.name}">
                         </div>
                         <div class="mb-5 text-center px-1">
                             <h4 class="font-black text-white text-[13px] uppercase tracking-[0.1em] mb-1 line-clamp-1">${p.name}</h4>
-                            <p class="text-2xl font-black price-glitz" style="--theme-color: ${gameConfigs[selectedGame].color}">C$ ${p.price}</p>
+                            <p class="text-2xl font-black price-glitz" style="--theme-color: ${p.color}">C$ ${p.price}</p>
                         </div>
-                        <div class="flex items-center justify-between bg-black/60 rounded-2xl border border-white/10 p-1.5 shadow-inner">
+                        <div class="flex items-center justify-between bg-black/60 rounded-2xl border border-white/10 p-2 shadow-inner">
                             <button onclick="updateQty('${p.id}', -1)" class="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl font-bold hover:bg-red-600 transition-all">-</button>
-                            <input type="number" id="qty-${p.id}" value="${qty}" oninput="setQtyDirect('${p.id}', this.value)" class="qty-input w-14 bg-transparent text-center font-black text-lg focus:outline-none text-white" min="0" max="99">
+                            <input type="number" id="qty-${p.id}" value="${qty}" oninput="setQtyDirect('${p.id}', this.value)" class="qty-input w-12 bg-transparent text-center font-black text-lg focus:outline-none text-white" min="0" max="99">
                             <button onclick="updateQty('${p.id}', 1)" class="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl font-bold hover:bg-blue-600 transition-all">+</button>
                         </div>
                     </div>`;
@@ -554,13 +597,13 @@
             const original = btn.innerHTML;
             btn.innerHTML = `<span class="text-[8px] font-black uppercase text-green-400">¡Copiado!</span>`;
             setTimeout(() => { btn.innerHTML = original; }, 2000);
-            showToast("✅ Datos bancarios copiados");
+            showToast("✅ Datos de pago copiados");
         }
 
         function confirmAddAccount() {
             const idVal = document.getElementById('player-id').value;
             if(!idVal) return showToast("⚠️ Ingresa el ID de cuenta", true);
-            showConfirm("Confirmar Cuenta", "¿Añadir estos datos y paquetes al carrito?", addAccountToOrder);
+            showConfirm("Añadir al Carrito", "¿Deseas agregar esta cuenta con los paquetes seleccionados?", addAccountToOrder);
         }
 
         function addAccountToOrder() {
@@ -570,13 +613,13 @@
             const config = gameConfigs[selectedGame];
 
             if(!idVal || !nameVal) return showToast("⚠️ Faltan datos (ID y Nick)", true);
-            if(config.extra && !extraVal) return showToast("⚠️ Datos de acceso requeridos", true);
+            if(config.extra && !extraVal) return showToast("⚠️ Ingresa los datos de acceso requeridos", true);
 
             const items = products.filter(p => currentSelection[p.id] > 0).map(p => ({
                 id: p.id, name: p.name, price: p.price, qty: currentSelection[p.id], game: p.game
             }));
 
-            if(!items.length) return showToast("⚠️ Selecciona paquetes", true);
+            if(!items.length) return showToast("⚠️ Selecciona paquetes primero", true);
 
             globalOrders.push({ 
                 game: selectedGame.toUpperCase(), 
@@ -590,7 +633,7 @@
             currentSelection = {};
             renderProducts();
             renderCart();
-            showToast("✅ Cuenta añadida");
+            showToast("✅ Cuenta añadida correctamente");
         }
 
         // --- EDICIÓN ---
@@ -603,7 +646,8 @@
             document.getElementById('edit-player-extra').value = o.extraVal || '';
             
             const config = gameConfigs[o.game.toLowerCase()];
-            document.getElementById('edit-extra-container').className = config.extra ? "md:col-span-2 space-y-2" : "hidden";
+            const extraContainer = document.getElementById('edit-extra-container');
+            if(extraContainer) extraContainer.className = config.extra ? "md:col-span-2 space-y-2" : "hidden";
 
             tempEditSelection = {};
             products.forEach(p => tempEditSelection[p.id] = 0);
@@ -611,23 +655,26 @@
             
             renderEditProducts();
             const modal = document.getElementById('edit-modal');
-            modal.classList.remove('hidden'); modal.classList.add('flex');
-            setTimeout(() => modal.classList.add('opacity-100'), 10);
+            if(modal) {
+                modal.classList.remove('hidden'); modal.classList.add('flex');
+                setTimeout(() => modal.classList.add('opacity-100'), 10);
+            }
         }
 
         function renderEditProducts() {
             const list = document.getElementById('edit-products-list');
+            if(!list) return;
             list.innerHTML = '';
             const gameType = globalOrders[editingIndex].game.toLowerCase();
             products.filter(p => p.game === gameType).forEach(p => {
                 const qty = tempEditSelection[p.id] || 0;
                 list.innerHTML += `
-                    <div class="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <div class="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5 shadow-inner">
                         <div class="text-xs">
                             <p class="font-black text-white uppercase tracking-widest">${p.name}</p>
                             <p class="text-blue-400 font-bold">C$ ${p.price}</p>
                         </div>
-                        <div class="flex items-center gap-4 bg-black/40 p-1.5 rounded-xl border border-white/5">
+                        <div class="flex items-center gap-4 bg-black/40 p-2 rounded-xl">
                             <button onclick="updateEditQty('${p.id}', -1)" class="w-8 h-8 bg-slate-800 rounded-lg font-bold hover:bg-red-500 transition-all">-</button>
                             <input type="number" value="${qty}" oninput="setEditQtyDirect('${p.id}', this.value)" class="qty-input w-10 bg-transparent text-center font-black text-sm outline-none text-white">
                             <button onclick="updateEditQty('${p.id}', 1)" class="w-8 h-8 bg-slate-800 rounded-lg font-bold hover:bg-blue-500 transition-all">+</button>
@@ -647,7 +694,8 @@
         function calculateEditTotal() {
             let total = 0;
             products.forEach(p => total += (tempEditSelection[p.id] || 0) * p.price);
-            document.getElementById('edit-total').innerText = total.toLocaleString();
+            const editTotalEl = document.getElementById('edit-total');
+            if(editTotalEl) editTotalEl.innerText = total.toLocaleString();
         }
 
         function confirmSaveEdit() {
@@ -678,11 +726,14 @@
 
         function closeEditModal() {
             const m = document.getElementById('edit-modal');
-            m.classList.remove('opacity-100'); setTimeout(() => m.classList.add('hidden'), 300);
+            if(m) {
+                m.classList.remove('opacity-100'); 
+                setTimeout(() => m.classList.add('hidden'), 300);
+            }
         }
 
         function confirmRemove(i) {
-            showConfirm("Quitar del Carrito", "¿Seguro que deseas eliminar esta cuenta del pedido?", () => {
+            showConfirm("Quitar del Carrito", "¿Seguro que deseas quitar esta cuenta del pedido?", () => {
                 globalOrders.splice(i, 1);
                 renderCart();
                 showToast("🗑️ Cuenta eliminada");
@@ -697,15 +748,15 @@
             globalOrders.forEach((o, i) => {
                 totalBase += o.total;
                 list.innerHTML += `
-                    <div class="bg-blue-950/20 border border-white/5 rounded-[32px] p-6 animate-slide-up relative group">
+                    <div class="bg-blue-950/20 border border-white/5 rounded-[32px] p-6 animate-slide-up relative">
                         <div class="absolute top-4 right-4 flex gap-2">
                             <button onclick="editOrder(${i})" class="bg-white/5 hover:bg-blue-600 p-2.5 rounded-xl transition-all shadow-md"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                             <button onclick="confirmRemove(${i})" class="bg-white/5 hover:bg-red-600 p-2.5 rounded-xl transition-all shadow-md"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
                         </div>
-                        <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">${o.game}</p>
+                        <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-1">${o.game}</p>
                         <p class="font-black text-white text-base truncate pr-20">${o.nameVal}</p>
                         <p class="text-[11px] text-slate-500 font-mono">ID: ${o.idVal}</p>
-                        ${o.extraVal ? `<p class="text-[10px] text-emerald-400 mt-2 italic line-clamp-1 opacity-70">Acceso: ${o.extraVal}</p>` : ''}
+                        ${o.extraVal ? `<p class="text-[9px] text-emerald-400 mt-2 italic line-clamp-1 opacity-70">Log: ${o.extraVal}</p>` : ''}
                         <div class="mt-4 space-y-1.5 border-t border-white/5 pt-3">
                             ${o.items.map(it => `<div class="text-[11px] flex justify-between text-slate-300"><span>${it.qty}x ${it.name}</span><span class="font-bold">C$${it.price*it.qty}</span></div>`).join('')}
                         </div>
@@ -721,7 +772,7 @@
                 let totalUSD = totalBase / 37;
                 let totalPaypal = (totalUSD * 1.054) + 0.35;
                 displayTotalStr = `$${totalPaypal.toFixed(2)} USD`;
-                if(notice) { notice.innerText = `C$37/USD + Comisión (5.4% + 0.35)`; notice.classList.remove('hidden'); }
+                if(notice) { notice.innerText = `C$37/USD + Comisión (5.4% + $0.35)`; notice.classList.remove('hidden'); }
             } else if(totalBase > 0 && selectedPayment === 'binance') {
                 displayTotalStr = `${(totalBase / 38).toFixed(2)} USDT`;
                 if(notice) { notice.innerText = `Tasa Binance: C$ 38 por USDT`; notice.classList.remove('hidden'); }
@@ -743,7 +794,7 @@
 
         function confirmFinalOrder() {
             if(!globalOrders.length || !selectedPayment) return showToast("⚠️ Completa tu pedido y pago", true);
-            showConfirm("Enviar Solicitud", "¿Abrir WhatsApp para enviar tu pedido oficial?", enviarPedidoFinal);
+            showConfirm("Enviar Pedido", "¿Deseas abrir WhatsApp para enviar tu solicitud de recarga?", enviarPedidoFinal);
         }
 
         function enviarPedidoFinal() {
@@ -751,8 +802,8 @@
             let msg = `*ASTRAL NEXUS MULTISERVICIOS* 🚀\n━━━━━━━━━━━━━━━━━━━\n\n`;
             globalOrders.forEach((o, i) => {
                 totalBase += o.total;
-                msg += `👤 *CUENTA ${i+1} [${o.game}]*\n▪ Nick: ${o.nameVal}\n▪ ID: \`${o.idVal}\`\n`;
-                if(o.extraVal) msg += `▪ Acceso: ${o.extraVal}\n`;
+                msg += `👤 *PEDIDO ${i+1} [${o.game}]*\n▪ Nick: ${o.nameVal}\n▪ ID/User: \`${o.idVal}\`\n`;
+                if(o.extraVal) msg += `▪ Datos Acceso: ${o.extraVal}\n`;
                 o.items.forEach(it => msg += `  - ${it.qty}x ${it.name}\n`);
                 msg += `\n`;
             });
@@ -762,10 +813,9 @@
             
             if(selectedPayment === 'paypal') {
                 let totalPaypal = (totalBase / 37 * 1.054) + 0.35;
-                msg += `💰 *TOTAL A PAGAR:* $${totalPaypal.toFixed(2)} USD\n`;
-                msg += `_(Incluye tasa cambio y comisión)_\n`;
+                msg += `💰 *TOTAL A ENVIAR:* $${totalPaypal.toFixed(2)} USD\n`;
             } else if(selectedPayment === 'binance') {
-                msg += `💰 *TOTAL A PAGAR:* ${(totalBase / 38).toFixed(2)} USDT\n`;
+                msg += `💰 *TOTAL A ENVIAR:* ${(totalBase / 38).toFixed(2)} USDT\n`;
             } else {
                 msg += `💰 *TOTAL A PAGAR: C$ ${totalBase.toLocaleString()}*\n`;
             }
@@ -782,8 +832,8 @@
             const playI = document.getElementById('music-icon-play');
             const pauseI = document.getElementById('music-icon-pause');
             const bars = document.getElementById('music-bars');
-            if(!isPlaying) { music.play(); playI.classList.add('hidden'); if(pauseI) pauseI.classList.remove('hidden'); if(bars) bars.classList.remove('hidden'); isPlaying = true; }
-            else { music.pause(); playI.classList.remove('hidden'); if(pauseI) pauseI.classList.add('hidden'); if(bars) bars.classList.add('hidden'); isPlaying = false; }
+            if(!isPlaying) { music.play(); playI?.classList.add('hidden'); pauseI?.classList.remove('hidden'); bars?.classList.remove('hidden'); isPlaying = true; }
+            else { music.pause(); playI?.classList.remove('hidden'); pauseI?.classList.add('hidden'); bars?.classList.add('hidden'); isPlaying = false; }
         }
         function openModal(src) {
             const m = document.getElementById('image-modal'); const img = document.getElementById('modal-img');
@@ -795,7 +845,7 @@
         function showToast(m, err) {
             const t = document.createElement('div');
             t.className = `${err ? 'bg-red-600' : 'bg-blue-600'} text-white px-8 py-5 rounded-[24px] shadow-2xl font-black animate-slide-up text-[10px] uppercase tracking-widest border border-white/20`;
-            t.innerText = m; document.getElementById('toast-container').appendChild(t); setTimeout(() => t.remove(), 4000);
+            t.innerText = m; document.getElementById('toast-container')?.appendChild(t); setTimeout(() => t.remove(), 4000);
         }
         function createEmbers() {
             const container = document.getElementById('particles-bg');
